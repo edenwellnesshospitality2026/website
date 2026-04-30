@@ -1,0 +1,74 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body{
+  scroll-behavior: smooth;
+}
+@layer base {
+  :root {
+    --background: 45 33% 98%;
+    --foreground: 40 10% 30%;
+
+    --card: 45 33% 98%;
+    --card-foreground: 40 10% 30%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 40 10% 30%;
+
+    --primary: 100 24% 48%;
+    --primary-foreground: 355 100% 100%;
+
+    --secondary: 60 15% 94%;
+    --secondary-foreground: 40 10% 30%;
+
+    --muted: 60 15% 94%;
+    --muted-foreground: 30 5% 50%;
+
+    --accent: 28 40% 80%;
+    --accent-foreground: 40 10% 30%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 40 10% 90%;
+    --input: 40 10% 90%;
+    --ring: 100 24% 48%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+.section-padding {
+  @apply px-4 py-16 md:px-8 md:py-20 lg:px-16 xl:py-24;
+}
+
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-eden-dark via-eden to-eden-dark bg-clip-text text-transparent;
+}
+
+.btn-primary {
+  @apply bg-eden hover:bg-eden-dark text-white px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium;
+}
+
+.btn-secondary {
+  @apply bg-white border border-eden text-eden hover:bg-eden-light px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium;
+}

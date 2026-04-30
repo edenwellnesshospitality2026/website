@@ -1,0 +1,22 @@
+.active{
+    display: block !important;
+    opacity: 1 !important;
+    transition: all 0.5s ease;
+}
+.inactive {
+    display: none;
+    opacity: 0.2;
+    transition: all 0.5s ease;
+}
+.customflex{
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .customflex{
+      flex-direction: column;
+    }
+  }
