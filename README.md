@@ -24,6 +24,10 @@ Contact & Location: A dedicated section for contact information and a map integr
 
 Blog/News Section: An area to share updates, articles, and wellness tips.
 
+Operations Dashboard: Protected dashboard routes are integrated into this same app.
+  - /admin
+  - /dashboard/bookings
+
 Getting Started
 Follow these steps to get the project up and running on your local machine.
 
@@ -51,6 +55,10 @@ yarn dev
 
 
 The application will be available at http://localhost:5173 (or the port specified in your terminal).
+
+Environment variables for dashboard auth:
+
+- VITE_API_BASE_URL=http://localhost:8090
 
 Contributing
 Contributions are welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.

@@ -13,13 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createClient } from "@supabase/supabase-js";
 
-// Create a single supabase client for interacting with your database
-const supabase = createClient(
-  "https://pcrleaefqjoijrhydhis.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcmxlYWVmcWpvaWpyaHlkaGlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMTEyNzQsImV4cCI6MjA2NDc4NzI3NH0.YAU_W5cL1Y1xLJpoOCnQYGYdH4IFxwa-vOvku8l1_zU"
-);
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 const stayList = [
   { text: "Room boarding with breakfast" },
@@ -87,38 +82,45 @@ const BookingSummaryPage = () => {
       notes,
     };
 
-    const Jsondata: any = {
-      name: name,
-      email: email,
-      phone:phone,
-      number_of_guests: selectedGuests,
-      check_in: preferredCheckIn === "-" ? null : preferredCheckIn,
-      stay_package: "BookNow",
-      room_type: room,
-      room_description: `${size ?? ""}${
+    const totalAmount = (stateData.totalAmount && stateData.totalAmount > 0
+      ? stateData.totalAmount
+      : Number(price)) || 0;
+    const bookingPayload = {
+      guestName: name,
+      email,
+      phone,
+      listingName: room ?? "Unknown listing",
+      roomType: `${size ?? ""}${
         selectedPlans.length
           ? ` | Plans: ${selectedPlans
               .map((p) => `${p.code}x${p.qty}`)
               .join(", ")}`
           : ""
       }`,
-      special_request: notes,
+      checkIn: preferredCheckIn === "-" ? null : preferredCheckIn,
+      checkOut: stateData.checkOut ?? null,
+      adults: selectedGuests,
+      children: 0,
+      infants: 0,
+      totalGuests: selectedGuests,
+      totalAmount,
+      bookingSource: "website",
+      notes,
     };
 
     // Log to console
     console.log("📝 Booking Submission:", submission);
-    //  Submit to Supabase
+    const response = await fetch(`${API_BASE}/api/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingPayload),
+    });
 
-    const { data, error } = await supabase
-      .from("Leads")
-      .insert([Jsondata])
-      .select();
-
-    if (error) {
-      alert(error.message);
-    } else {
-      console.log(data);
+    if (response.ok) {
       navigate("/thank-you");
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      alert(errorData.error || "Failed to submit booking.");
     }
   };
 

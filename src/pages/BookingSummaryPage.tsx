@@ -4,15 +4,7 @@ import { updatedRoomData } from "../data/roomData";
 import SanctuarySelectionCard from "../components/accommodations/SanctuarySelectionCard";
 import InquiryForm from "../components/accommodations/InquiryForm";
 import React, { useState, useEffect } from "react";
-
-import { createClient } from "@supabase/supabase-js";
-import { json } from "stream/consumers";
-
-// Create a single supabase client for interacting with your database
-const supabase = createClient(
-  "https://pcrleaefqjoijrhydhis.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcmxlYWVmcWpvaWpyaHlkaGlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMTEyNzQsImV4cCI6MjA2NDc4NzI3NH0.YAU_W5cL1Y1xLJpoOCnQYGYdH4IFxwa-vOvku8l1_zU"
-);
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 const BookingSummaryPage = () => {
   useEffect(() => {
@@ -53,38 +45,42 @@ const BookingSummaryPage = () => {
     isPackage: true,
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    const Jsondata: any = {
-      name: formData.name,
+    const bookingPayload = {
+      guestName: formData.name,
       email: formData.email,
       phone: formData.phone,
-      number_of_guests: formData.numberOfGuests,
-      check_in: bookingDetails?.packageDetails?.checkInDate?.toDateString(),
-      check_out: bookingDetails?.packageDetails?.checkOutDate?.toDateString(),
-      stay_package: "Custom",
-      room_type: bookingDetails.roomType?.name,
-      room_description: bookingDetails.roomCategory?.name,
-      special_request: formData.specialRequests,
+      listingName: bookingDetails.roomType?.name || "Unknown listing",
+      roomType: bookingDetails.roomCategory?.name || "Unknown room",
+      checkIn: bookingDetails?.packageDetails?.checkInDate?.toDateString(),
+      checkOut: bookingDetails?.packageDetails?.checkOutDate?.toDateString(),
+      adults: formData.numberOfGuests,
+      children: 0,
+      infants: 0,
+      totalGuests: formData.numberOfGuests,
+      totalAmount: bookingDetails?.packageDetails?.price || 0,
+      bookingSource: "website",
+      notes: formData.specialRequests,
     };
 
-    const { data, error } = await supabase
-      .from("Leads")
-      .insert([Jsondata])
-      .select();
+    const response = await fetch(`${API_BASE}/api/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingPayload),
+    });
 
-    if (error) {
-      alert(error.message);
-    } else {
-      console.log(data);
-
+    if (response.ok) {
       navigate("/thank-you");
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      alert(errorData.error || "Failed to submit booking.");
     }
   };
 
