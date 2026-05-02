@@ -1,4 +1,6 @@
 import React from "react";
+import { EDEN_PROMO_YOUTUBE_EMBED_SRC } from "@/lib/promo-youtube-embed";
+
 const About: React.FC = () => {
   return (
     <section id="about" className=" bg-eden-beige/30 mt-10">
@@ -58,7 +60,7 @@ const About: React.FC = () => {
   <div className="w-full h-full rounded-lg overflow-hidden">
   <iframe
     className="w-full h-full"
-    src="https://www.youtube.com/embed/HeOyO0b3BzI?autoplay=1&mute=1&loop=1&playlist=HeOyO0b3BzI&controls=0&modestbranding=1&showinfo=0&rel=0"
+    src={EDEN_PROMO_YOUTUBE_EMBED_SRC}
     title="Eden Wellness & Hospitality Property Video"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerPolicy="strict-origin-when-cross-origin"

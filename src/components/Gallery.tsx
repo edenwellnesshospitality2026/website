@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+"use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import React, { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Image } from "lucide-react";
 import Carousel from "react-multi-carousel";
@@ -8,12 +9,9 @@ import "react-multi-carousel/lib/styles.css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import "../Styles/Global.css";
+import { getGallery } from "@/lib/cms-api";
 
-const Gallery: React.FC = () => {
-    const [lightboxOpen, setLightboxOpen] = useState(false);
-    const [lightboxIndex, setLightboxIndex] = useState(0);
-
-    const galleryImages = [
+const STATIC_GALLERY_IMAGES = [
         {
             src: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/eden-rooftop?updatedAt=1763400790090",
             alt: "Eden roof top view",
@@ -56,6 +54,30 @@ const Gallery: React.FC = () => {
             alt: "Community living area",
         },
     ];
+
+const Gallery: React.FC = () => {
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    const { data: categories } = useQuery({
+        queryKey: ["cms", "gallery"],
+        queryFn: getGallery,
+        staleTime: 60_000,
+    });
+
+    const galleryImages = useMemo(() => {
+        if (!categories?.length) return STATIC_GALLERY_IMAGES;
+        const collected: { src: string; alt: string }[] = [];
+        for (const cat of categories) {
+            for (const im of cat.images ?? []) {
+                collected.push({
+                    src: im.secureUrl,
+                    alt: im.alt || cat.title,
+                });
+            }
+        }
+        return collected.length > 0 ? collected : STATIC_GALLERY_IMAGES;
+    }, [categories]);
 
     const openLightbox = (index: number) => {
         setLightboxIndex(index);

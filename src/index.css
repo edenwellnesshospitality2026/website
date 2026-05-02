@@ -91,4 +91,24 @@ body{
   .dashboard-theme .luxe-card {
     @apply rounded-2xl border border-[#e7ddc8] bg-[rgba(255,253,247,0.9)] shadow-soft backdrop-blur-sm;
   }
+
+  .dashboard-theme .dashboard-sidebar {
+    box-shadow: 4px 0 28px -16px rgba(80, 55, 30, 0.12);
+  }
+}
+
+/* Guest Stories: custom Lucide arrows need library positioning classes; hide default revicon glyph */
+.guest-stories-carousel .react-multiple-carousel__arrow::before {
+  display: none !important;
+}
+
+.guest-stories-carousel .react-multiple-carousel__arrow {
+  z-index: 1200 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.guest-stories-carousel .react-multi-carousel-dot-list {
+  margin-top: 1rem;
 }

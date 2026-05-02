@@ -1,5 +1,7 @@
 import React from "react";
 import { CheckCircle } from "lucide-react";
+import { EDEN_PROMO_YOUTUBE_EMBED_SRC } from "@/lib/promo-youtube-embed";
+
 const WhyChoose: React.FC = () => {
   const reasons = [
     {
@@ -30,7 +32,7 @@ const WhyChoose: React.FC = () => {
 <div className="rounded-2xl overflow-hidden shadow-xl">
   <iframe
     className="w-full h-[250px] md:h-[400px] object-cover"
-    src="https://www.youtube.com/embed/VI5nh8qqfgE?autoplay=1&mute=1&loop=1&playlist=VI5nh8qqfgE&controls=0&showinfo=0&modestbranding=1&rel=0"
+    src={EDEN_PROMO_YOUTUBE_EMBED_SRC}
     title="EDEN WELLNESS & HOSPITALITY - Where your mind checks in before your luggage."
     allow="autoplay; encrypted-media"
     referrerPolicy="strict-origin-when-cross-origin"

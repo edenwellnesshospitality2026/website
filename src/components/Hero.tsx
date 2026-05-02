@@ -1,183 +1,188 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { pushToDataLayer } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useHomepageSiteContent } from "@/hooks/useHomepageSiteContent";
 
-const slides = [
-    {
-        title: "Ultimate Luxury Wellness & Hospitality Retreat",
-        subtitle: "in Dehradun Valley",
-        description:
-            "Experience premium wellness and hospitality in the Himalayas.",
-        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(10).png",
-    },
-    {
-        title: "Curated Wellness Living",
-        subtitle: "for mindful getaways",
-        description:
-            "Stay in thoughtfully designed residences with curated amenities.",
-        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/6.png",
-    },
-    {
-        title: "Premium Suites & Residences",
-        subtitle: "crafted for comfort",
-        description:
-            "Choose from studio to grand suites tailored for every stay style.",
-        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/1.png",
-    },
-    {
-        title: "Where Nature Meets Hospitality",
-        subtitle: "in the lap of the hills",
-        description:
-            "Wake up to valley views and elevate your retreat experience.",
-        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(9).png",
-    },
+type SlideView = {
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+};
+
+const FALLBACK_SLIDES: SlideView[] = [
+  {
+    title: "Ultimate Luxury Wellness & Hospitality Retreat",
+    subtitle: "in Dehradun Valley",
+    description: "Experience premium wellness and hospitality in the Himalayas.",
+    image:
+      "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(10).png",
+  },
+  {
+    title: "Curated Wellness Living",
+    subtitle: "for mindful getaways",
+    description: "Stay in thoughtfully designed residences with curated amenities.",
+    image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/6.png",
+  },
+  {
+    title: "Premium Suites & Residences",
+    subtitle: "crafted for comfort",
+    description: "Choose from studio to grand suites tailored for every stay style.",
+    image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/1.png",
+  },
+  {
+    title: "Where Nature Meets Hospitality",
+    subtitle: "in the lap of the hills",
+    description: "Wake up to valley views and elevate your retreat experience.",
+    image:
+      "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(9).png",
+  },
 ];
 
 const HeroCarousel: React.FC = () => {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-        Autoplay({ delay: 5000, stopOnInteraction: false }),
-    ]);
+  const { data } = useHomepageSiteContent();
 
-    const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const slides = useMemo((): SlideView[] => {
+    const raw = data?.heroSlides;
+    if (raw && raw.length > 0) {
+      return [...raw]
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((s) => ({
+          title: s.title?.trim() ?? "",
+          subtitle: s.subtitle?.trim() ?? "",
+          description: s.description?.trim() ?? "",
+          image: s.secureUrl,
+        }));
+    }
+    return FALLBACK_SLIDES;
+  }, [data]);
 
-    return (
-        <>
-            <section className="relative overflow-hidden">
-                <div ref={emblaRef} className="overflow-hidden border-red-500">
-                    <div className="flex">
-                        {slides.map((slide, index) => (
-                            <div
-                                key={index}
-                                className="relative min-w-full h-[80vh] md:h-[100vh]  flex items-center justify-center"
-                            >
-                                {/* Background */}
-                                <img
-                                    src={slide.image}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    alt=""
-                                />
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ delay: 5000, stopOnInteraction: false }),
+  ]);
 
-                                <div className="absolute inset-0" />
+  useEffect(() => {
+    emblaApi?.reInit();
+  }, [emblaApi, slides]);
 
-                                {/* Content */}
-                                <div className="relative z-10 max-w-3xl text-center text-white px-6">
-                                    <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
-                                        {slide.title}
-                                        <br />
-                                        <span className="text-eden-beige">
-                                            {slide.subtitle}
-                                        </span>
-                                    </h1>
-                                    <p className="text-lg md:text-xl mb-8">
-                                        {slide.description}
-                                    </p>
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-                                    {/* <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                        <a
-                                            href="http://localhost:8080/booking"
-                                        >
-                                            <Button
-                                                className="btn-primary"
-                                                onClick={() =>
-                                                    pushToDataLayer(
-                                                        "contact_button_click",
-                                                        {
-                                                            button_location:
-                                                                "hero-carousel",
-                                                        }
-                                                    )
-                                                }
-                                            >
-                                                Book Now
-                                            </Button>
-                                        </a>
-                                        <a href="/#choose-your-sanctuary">
-                                            <Button
-                                                variant="outline"
-                                                className="btn-secondary"
-                                            >
-                                                Explore Rooms
-                                            </Button>
-                                        </a>
-                                    </div> */}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+  return (
+    <>
+      <section className="relative overflow-hidden">
+        <div ref={emblaRef} className="overflow-hidden">
+          <div className="flex">
+            {slides.map((slide, index) => (
+              <div
+                key={`${slide.image}-${index}`}
+                className="relative flex h-[80vh] min-w-full items-center justify-center md:h-[100vh]"
+              >
+                <img
+                  src={slide.image}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  alt={slide.title || "Eden hero"}
+                />
+
+                <div className="absolute inset-0" />
+
+                <div className="relative z-10 max-w-3xl px-6 text-center text-white">
+                  {slide.title || slide.subtitle ?
+                    <h1 className="mb-4 font-serif text-4xl font-semibold md:text-5xl">
+                      {slide.title ?
+                        <>
+                          {slide.title}
+                          {slide.subtitle ? <br /> : null}
+                        </>
+                      : null}
+                      {slide.subtitle ?
+                        <span className="text-eden-beige">{slide.subtitle}</span>
+                      : null}
+                    </h1>
+                  : null}
+                  {slide.description ?
+                    <p className="mb-8 text-lg md:text-xl">{slide.description}</p>
+                  : null}
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-                {/* Navigation Buttons */}
-                <button
-                    onClick={scrollPrev}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-3 rounded-full hover:bg-white"
-                >
-                    <ChevronLeft />
-                </button>
+        <button
+          type="button"
+          onClick={scrollPrev}
+          className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 hover:bg-white"
+        >
+          <ChevronLeft />
+        </button>
 
-                <button
-                    onClick={scrollNext}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 p-3 rounded-full hover:bg-white"
-                >
-                    <ChevronRight />
-                </button>
-            </section>
-            <section className="bg-eden py-8">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex flex-col sm:flex-row justify-center gap-6 px-6 sm:px-0">
-                        <a
-                            href="http://localhost:8080/booking"
-                        >
-                            <Button
-                                onClick={() =>
-                                    pushToDataLayer("contact_button_click", {
-                                        button_location: "navbar",
-                                    })
-                                }
-                                variant="outline"
-                                className="bg-eden-dark text-white px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium w-full sm:w-auto"
-                            >
-                                Book Now
-                            </Button>
-                        </a>
+        <button
+          type="button"
+          onClick={scrollNext}
+          className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 hover:bg-white"
+        >
+          <ChevronRight />
+        </button>
+      </section>
+      <section className="bg-eden py-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col justify-center gap-6 px-6 sm:flex-row sm:px-0">
+            <Button
+              variant="outline"
+              className="w-full rounded-md bg-eden-dark px-6 py-3 font-medium text-white transition-all duration-300 ease-in-out sm:w-auto"
+              asChild
+            >
+              <Link
+                to="/booking"
+                onClick={() =>
+                  pushToDataLayer("contact_button_click", {
+                    button_location: "hero-strip-book-now",
+                  })
+                }
+              >
+                Book Now
+              </Link>
+            </Button>
 
-                        <a href="#contact">
-                            <Button
-                                onClick={() =>
-                                    pushToDataLayer("contact_button_click", {
-                                        button_location: "navbar",
-                                    })
-                                }
-                                variant="outline"
-                                className="bg-eden-dark text-white px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium w-full sm:w-auto"
-                            >
-                                Book a Table
-                            </Button>
-                        </a>
+            <a href="#contact">
+              <Button
+                onClick={() =>
+                  pushToDataLayer("contact_button_click", {
+                    button_location: "navbar",
+                  })
+                }
+                variant="outline"
+                className="w-full rounded-md bg-eden-dark px-6 py-3 font-medium text-white transition-all duration-300 ease-in-out sm:w-auto"
+              >
+                Book a Table
+              </Button>
+            </a>
 
-                        <a href="/#choose-your-sanctuary">
-                            <Button
-                                onClick={() =>
-                                    pushToDataLayer("contact_button_click", {
-                                        button_location: "navbar",
-                                    })
-                                }
-                                variant="outline"
-                                className="bg-eden-dark text-white px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium w-full sm:w-auto"
-                            >
-                                Explore Rooms
-                            </Button>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </>
-    );
+            <a href="/#choose-your-sanctuary">
+              <Button
+                onClick={() =>
+                  pushToDataLayer("contact_button_click", {
+                    button_location: "navbar",
+                  })
+                }
+                variant="outline"
+                className="w-full rounded-md bg-eden-dark px-6 py-3 font-medium text-white transition-all duration-300 ease-in-out sm:w-auto"
+              >
+                Explore Rooms
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
+  );
 };
 
 export default HeroCarousel;

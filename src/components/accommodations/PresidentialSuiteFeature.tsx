@@ -10,8 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { roomTypes } from "@/data/packageData";
 import { updatedRoomData } from "@/data/roomData";
 import type { RoomType } from "@/types/accommodation";
+import type { PresidentialSuiteDoc } from "@/lib/cms-api";
 
-const PRESIDENTIAL_GALLERY: { src: string; alt: string }[] = [
+const STATIC_GALLERY_FALLBACK: { src: string; alt: string }[] = [
     { src: "/assets/Presidential.webp", alt: "Presidential Suite" },
     {
         src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1949-Color-Grade.jpg?updatedAt=1749653418146",
@@ -42,6 +43,8 @@ function getRoomData(roomId: string) {
 }
 
 export interface PresidentialSuiteFeatureProps {
+    /** Presidential Suite CMS document (`GET /api/cms/presidential-suite`). */
+    suite?: PresidentialSuiteDoc | null;
     /** When true, shows guests + nightly rate under the description (Book Now page). */
     showPricing?: boolean;
     onBookNow: () => void;
@@ -54,6 +57,7 @@ export interface PresidentialSuiteFeatureProps {
 }
 
 const PresidentialSuiteFeature = ({
+    suite,
     showPricing = false,
     onBookNow,
     sectionId = "pick-your-apartment",
@@ -65,6 +69,34 @@ const PresidentialSuiteFeature = ({
         []
     );
     const roomData = getRoomData("presidential");
+
+    const gallerySlides =
+        suite?.images?.length ?
+            suite.images.map((im) => ({
+                src: im.secureUrl,
+                alt: im.alt || suite.headline,
+            }))
+        :   STATIC_GALLERY_FALLBACK;
+
+    const heroSrc = gallerySlides[0]?.src ?? roomType.image;
+    const displayTitle = suite?.headline ?? roomType.name;
+    const displayDescription = suite?.description ?? roomType.description;
+    const sizeBadge = suite?.sizeLabel ?? roomData.size;
+    const priceFromShowcase =
+        suite?.startingPrice !== undefined && suite.startingPrice !== null ?
+            suite.startingPrice
+        :   roomType.startingPrice;
+    const showPriceBlock =
+        showPricing && (suite ? suite.showPricing !== false : true);
+
+    const bookLabel = suite?.bookButtonLabel?.trim() || "Book Now";
+
+    const heroIntroParagraph =
+        suite ?
+            suite.description.length > 200 ?
+                `${suite.description.slice(0, 197)}…`
+            :   suite.description
+        :   "Distinctive stays with expansive living, premium finishes, and elevated hospitality in the valley.";
 
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -87,13 +119,12 @@ const PresidentialSuiteFeature = ({
                     <div className="customflex mb-6 justify-center">
                         <Leaf className="w-8 h-8 text-eden mr-3 shrink-0" />
                         <h2 className="font-serif font-semibold text-eden-dark text-3xl md:text-5xl">
-                            Presidential Suite
+                            {displayTitle}
                         </h2>
                     </div>
                     <div className="w-20 h-1 bg-eden mx-auto mb-6" />
                     <p className="text-eden-text text-lg leading-relaxed">
-                        Distinctive stays with expansive living, premium
-                        finishes, and elevated hospitality in the valley.
+                        {heroIntroParagraph}
                     </p>
                 </div>
             )}
@@ -115,8 +146,8 @@ const PresidentialSuiteFeature = ({
                             }}
                         >
                             <img
-                                src={roomType.image}
-                                alt={roomType.name}
+                                src={heroSrc}
+                                alt={displayTitle}
                                 className="w-full h-[280px] md:h-[400px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                             />
                             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
@@ -133,20 +164,20 @@ const PresidentialSuiteFeature = ({
                                 </div>
                             </div>
                             <Badge className="absolute top-5 left-5 bg-eden/95 text-white border-0 px-4 py-2 text-sm font-medium backdrop-blur-sm">
-                                {roomData.size}
+                                {sizeBadge}
                             </Badge>
                         </div>
                     </div>
 
                     <div className="md:w-1/2 flex flex-col justify-center text-left">
                         <h3 className="text-2xl md:text-3xl font-serif font-semibold text-eden mb-4 tracking-tight">
-                            {roomType.name}
+                            {displayTitle}
                         </h3>
                         <p className="text-eden-text leading-relaxed text-base md:text-lg mb-8">
-                            {roomType.description}
+                            {displayDescription}
                         </p>
 
-                        {showPricing && (
+                        {showPriceBlock && (
                             <div className="flex items-center justify-between gap-4 mb-8 pb-6 border-b border-eden/15">
                                 <div className="flex items-center space-x-2 text-eden-text">
                                     <Users className="w-5 h-5 text-eden shrink-0" />
@@ -160,7 +191,7 @@ const PresidentialSuiteFeature = ({
                                     </p>
                                     <p className="text-3xl font-serif font-bold text-emerald-700">
                                         ₹
-                                        {roomType.startingPrice.toLocaleString()}
+                                        {priceFromShowcase.toLocaleString()}
                                     </p>
                                     <p className="text-sm text-stone-500">
                                         per night
@@ -174,7 +205,7 @@ const PresidentialSuiteFeature = ({
                                 className="w-full bg-eden hover:bg-emerald-700 text-white border-0 py-6 text-lg font-medium rounded-xl"
                                 onClick={onBookNow}
                             >
-                                Book Now
+                                {bookLabel}
                             </Button>
                         </div>
                     </div>
@@ -184,7 +215,7 @@ const PresidentialSuiteFeature = ({
             <Lightbox
                 open={lightboxOpen}
                 close={() => setLightboxOpen(false)}
-                slides={PRESIDENTIAL_GALLERY}
+                slides={gallerySlides}
                 index={lightboxIndex}
                 on={{ view: ({ index }) => setLightboxIndex(index) }}
                 styles={{

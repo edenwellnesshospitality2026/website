@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   RoomType,
   RoomCategory,
@@ -11,18 +12,14 @@ import DatePackageSelector from "./accommodations/DateSelector";
 import InquiryFormComponent from "./accommodations/InquiryFormComponent";
 type Step = "roomType" | "category" | "datePackage" | "inquiry";
 const AccommodationFlow = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<Step>("roomType");
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     nights: 0,
     isPackage: false,
   });
-  const handleRoomTypeSelect = (roomType: RoomType) => {
-    setBookingDetails((prev) => ({
-      ...prev,
-      roomType,
-      roomCategory: undefined,
-    }));
-    setCurrentStep("category");
+  const handleRoomTypeSelect = (_roomType: RoomType) => {
+    navigate("/booking");
   };
   const handleCategorySelect = (category: RoomCategory) => {
     setBookingDetails((prev) => ({

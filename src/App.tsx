@@ -21,6 +21,13 @@ import BookSummary from "./pages/BookSummary";
 import SocialBar from "./components/SocialBar"
 import DashboardLoginPage from "./dashboard/pages/DashboardLoginPage";
 import DashboardBookingsPage from "./dashboard/pages/DashboardBookingsPage";
+import DashboardCmsPresidentialPage from "./dashboard/pages/DashboardCmsPresidentialPage";
+import DashboardCmsRoomCardsPage from "./dashboard/pages/DashboardCmsRoomCardsPage";
+import DashboardCmsGalleryPage from "./dashboard/pages/DashboardCmsGalleryPage";
+import DashboardCmsMembershipPage from "./dashboard/pages/DashboardCmsMembershipPage";
+import DashboardCmsStoriesPage from "./dashboard/pages/DashboardCmsStoriesPage";
+import DashboardCmsSitePage from "./dashboard/pages/DashboardCmsSitePage";
+import DashboardAccountPage from "./dashboard/pages/DashboardAccountPage";
 import { AuthProvider } from "./dashboard/auth/AuthContext";
 import { ProtectedRoute } from "./dashboard/auth/ProtectedRoute";
 
@@ -65,10 +72,67 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/dashboard/account"
+          element={
+            <ProtectedRoute>
+              <DashboardAccountPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard/bookings"
           element={
             <ProtectedRoute>
               <DashboardBookingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/dashboard/cms/rooms" element={<Navigate to="/dashboard/cms/room-cards" replace />} />
+        <Route
+          path="/dashboard/cms/presidential-suite"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsPresidentialPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cms/room-cards"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsRoomCardsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cms/gallery"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsGalleryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cms/membership"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsMembershipPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cms/stories"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsStoriesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cms/site"
+          element={
+            <ProtectedRoute>
+              <DashboardCmsSitePage />
             </ProtectedRoute>
           }
         />

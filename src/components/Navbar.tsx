@@ -3,8 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { pushToDataLayer } from "@/lib/utils";
+import { useHomepageSiteContent } from "@/hooks/useHomepageSiteContent";
+import { DEFAULT_CORPORATE_LINK_URL } from "@/lib/cms-api";
 
 const Navbar: React.FC = () => {
+  const { data: siteContent } = useHomepageSiteContent();
+  const corporateVisible = siteContent?.corporateLinkVisible !== false;
+  const corporateHref =
+    siteContent?.corporateLinkUrl?.trim() || DEFAULT_CORPORATE_LINK_URL;
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -94,13 +100,16 @@ const Navbar: React.FC = () => {
           >
             Amenities
           </button>
-          {/* <a href="/#faq" className="text-eden-text hover:text-eden transition-colors">FAQs</a> */}
-          <button
-            onClick={() => scrollToSection("faq")}
-            className="text-eden-text hover:text-eden transition-colors bg-transparent border-none cursor-pointer"
-          >
-            FAQs
-          </button>
+          {corporateVisible ?
+            <a
+              href={corporateHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-eden-text transition-colors hover:text-eden"
+            >
+              Corporate
+            </a>
+          : null}
 
           <a
             href="/gallery"
@@ -185,12 +194,17 @@ const Navbar: React.FC = () => {
                 Amenities
               </a>
 
-              <button
-                onClick={() => scrollToSection("faq")}
-                className="text-eden-text hover:text-eden py-2 px-4 text-left bg-transparent border-none cursor-pointer"
-              >
-                FAQs
-              </button>
+              {corporateVisible ?
+                <a
+                  href={corporateHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-eden-text transition-colors hover:text-eden"
+                  onClick={toggleMobileMenu}
+                >
+                  Corporate
+                </a>
+              : null}
 
               <a
                 href="/gallery"

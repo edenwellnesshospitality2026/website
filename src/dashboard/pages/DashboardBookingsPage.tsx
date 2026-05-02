@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
-  Bell, Calendar, CheckCircle2, Clock, DoorOpen, Filter, LogOut, MoreHorizontal,
+  Bell, Calendar, CheckCircle2, Clock, DoorOpen, Filter, MoreHorizontal,
   Pencil, Plus, Search, Sparkles, XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,11 +13,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { useAuth } from "../auth/AuthContext";
 import { BookingDetails } from "../components/BookingDetails";
 import { BookingForm } from "../components/BookingForm";
 import { BookingStatusBadge, PaymentStatusBadge } from "../components/StatusBadge";
-import { EdenLogo } from "../components/EdenLogo";
+import { DashboardShell } from "../components/DashboardShell";
 import {
   type Booking, type BookingStatus, type RoomListing,
   mockBookings, mockRooms, formatINR,
@@ -29,8 +27,6 @@ import { getToken } from "../auth/auth-service";
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 const DashboardBookingsPage = () => {
-  const navigate = useNavigate();
-  const { user, signOut } = useAuth();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [rooms, setRooms] = useState<RoomListing[]>(mockRooms);
@@ -181,45 +177,29 @@ const DashboardBookingsPage = () => {
 
   const openNew = () => { setEditingBooking(null); setFormOpen(true); };
   const openEdit = (b: Booking) => { setEditingBooking(b); setFormOpen(true); };
-  const profileName = user?.email || "Eden";
-  const profileInitials = (user?.email?.slice(0, 2) || "ED").toUpperCase();
 
   return (
-    <div className="dashboard-theme min-h-screen bg-background contour-bg">
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur-xl">
-        <div className="container flex h-20 items-center justify-between gap-4">
-          <EdenLogo showTagline />
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Button variant="ghost" size="icon" className="text-cocoa hover:text-espresso relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-gold" />
-            </Button>
-            <div className="hidden sm:flex items-center gap-3 px-4 py-1.5 rounded-full border border-border/60 bg-card">
-              <div className="h-8 w-8 rounded-full bg-gradient-gold flex items-center justify-center text-ivory text-xs font-semibold shadow-gold">{profileInitials}</div>
-              <div className="leading-tight">
-                <p className="text-xs font-medium text-espresso">{profileName}</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Operations</p>
-              </div>
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => { signOut(); toast.success("Signed out"); navigate("/admin"); }}>
-              <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sign out</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="container py-8 sm:py-12 space-y-10 animate-fade-in">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-gold-deep mb-2">Operations Panel</p>
-            <h1 className="font-display text-4xl sm:text-5xl text-espresso">Review Bookings</h1>
-            <p className="text-muted-foreground mt-2">A calm overview of every reservation across the retreat.</p>
-          </div>
-          <Button onClick={openNew} className="bg-gradient-gold text-ivory shadow-gold hover:opacity-95 h-11 px-5">
+    <DashboardShell
+      kicker="Operations Panel"
+      title="Review Bookings"
+      subtitle="A calm overview of every reservation across the retreat."
+      titleClassName="text-4xl sm:text-5xl"
+      userRoleLabel="Operations"
+      headerActions={
+        <>
+          <Button variant="ghost" size="icon" className="relative text-cocoa hover:text-espresso">
+            <Bell className="h-5 w-5" />
+            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
+          </Button>
+          <Button
+            onClick={openNew}
+            className="h-11 bg-gradient-gold px-5 text-ivory shadow-gold hover:opacity-95"
+          >
             <Plus className="h-4 w-4" /> New Booking
           </Button>
-        </div>
-
+        </>
+      }
+    >
         <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           <SummaryCard icon={<Sparkles />} label="New" value={summary.new} tone="info" loading={loading} />
           <SummaryCard icon={<Clock />} label="Pending" value={summary.pending} tone="warning" loading={loading} />
@@ -306,18 +286,17 @@ const DashboardBookingsPage = () => {
             <RoomListingPanel rooms={rooms} />
           </TabsContent>
         </Tabs>
-      </main>
 
       <BookingForm open={formOpen} onOpenChange={setFormOpen} booking={editingBooking} onSave={onSave} />
       <BookingDetails booking={viewing} onClose={() => setViewing(null)} onEdit={openEdit} />
 
-      <footer className="border-t border-border/60 mt-16">
-        <div className="container py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+      <footer className="mt-16 border-t border-border/60">
+        <div className="flex flex-col items-center justify-between gap-2 py-6 text-xs text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} Eden Wellness & Hospitality · Dehradun Valley</p>
           <p className="tracking-[0.2em] uppercase">Crafted with calm</p>
         </div>
       </footer>
-    </div>
+    </DashboardShell>
   );
 };
 

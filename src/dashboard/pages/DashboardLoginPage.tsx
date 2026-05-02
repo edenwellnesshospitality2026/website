@@ -22,8 +22,8 @@ const DashboardLoginPage = () => {
       await signIn(email, password);
       const from = (location.state as { from?: { pathname?: string } })?.from?.pathname;
       navigate(from || "/dashboard/bookings", { replace: true });
-    } catch {
-      setError("Invalid email or password");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Invalid email or password");
     } finally {
       setLoading(false);
     }

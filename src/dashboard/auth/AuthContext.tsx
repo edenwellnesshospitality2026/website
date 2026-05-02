@@ -6,6 +6,8 @@ interface AuthContextValue {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
+  /** Replace JWT and user (e.g. after email change). */
+  setSession: (token: string, user: AuthUser) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -46,6 +48,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       signOut: () => {
         clearToken();
         setUser(null);
+      },
+      setSession: (token: string, nextUser: AuthUser) => {
+        setToken(token);
+        setUser(nextUser);
       },
     }),
     [user, loading]

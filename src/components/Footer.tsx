@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="/book-now"
+                  href="/booking"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   Book Now
