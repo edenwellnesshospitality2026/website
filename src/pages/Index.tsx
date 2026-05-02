@@ -12,6 +12,7 @@ import Contact from '@/components/Contact';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import Experiences from "@/components/Experiences"
+import MembershipPlans from "@/components/MembershipPlans"
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -50,6 +51,7 @@ const Index = () => {
         <About />
         <Accommodations />
         <Experiences />
+        <MembershipPlans />
         <Amenities />
         <WhyChoose />
         <Testimonials />

@@ -14,5 +14,10 @@ export const updatedRoomData = {
     size: "1600 sq ft",
     guests: "4 guests", 
     maxGuests: 4
+  },
+  presidential: {
+    size: "1800-2200 sq ft",
+    guests: "6 guests",
+    maxGuests: 6
   }
 };

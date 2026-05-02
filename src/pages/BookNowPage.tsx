@@ -117,6 +117,30 @@ const apartmentGalleries: Record<
             },
         ],
     },
+    presidential: {
+        images: [
+            {
+                src: "/assets/Presidential.webp",
+                alt: "Presidential Suite",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1949-Color-Grade.jpg?updatedAt=1749653418146",
+                alt: "Presidential bedroom",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1962-Color-Grade.jpg?updatedAt=1749653417819",
+                alt: "Presidential kitchen",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1929-Color-Grade.jpg?updatedAt=1749653417734",
+                alt: "Presidential suite",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/Cover---to-be-extracted-fom-the-video-cOLOR-GRADE.jpg?updatedAt=1749653416116",
+                alt: "Presidential residence",
+            },
+        ],
+    },
 };
 
 function BookNowPage() {
@@ -140,23 +164,38 @@ function BookNowPage() {
     >([]);
     const [lightboxIndex, setLightboxIndex] = useState(0);
 
-    const handleBookNow = (roomType: any) => {
+    const getDetailPath = (roomType: RoomType) => {
+        switch (roomType.id) {
+            case "studio":
+                return "/studio";
+            case "1bhk":
+                return "/1bhk";
+            case "2bhk":
+                return "/2bhk";
+            case "presidential":
+                return "/presidential";
+            default:
+                return "/";
+        }
+    };
+
+    const handleBookNow = (roomType: RoomType) => {
         const room = roomType.name;
         const price = roomType.startingPrice;
-        const size = updatedRoomData[roomType.id]?.size || roomType.size || "";
+        const size = updatedRoomData[roomType.id as keyof typeof updatedRoomData]?.size || roomType.size || "";
         const guests =
-            updatedRoomData[roomType.id]?.guests || roomType.guests || 1;
+            updatedRoomData[roomType.id as keyof typeof updatedRoomData]?.guests || roomType.guests || 1;
 
-        // 👇 Add maxGuests separately
-        var maxGuests: number = 0;
-        if (roomType.name.toLowerCase().includes("studio")) {
-            // ? 2 : 3
-            maxGuests = 2;
-        } else if (roomType.name.toLowerCase().includes("1 bhk")) {
-            maxGuests = 3;
-        } else {
-            maxGuests = 4;
-        }
+        const rd = updatedRoomData[roomType.id as keyof typeof updatedRoomData];
+        const maxGuests =
+            rd?.maxGuests ??
+            (roomType.id === "studio"
+                ? 2
+                : roomType.id === "1bhk"
+                  ? 3
+                  : roomType.id === "presidential"
+                    ? 6
+                    : 4);
 
         const queryParams = new URLSearchParams({
             room,
@@ -175,6 +214,8 @@ function BookNowPage() {
                 return "onebhk";
             case "2bhk":
                 return "twobhk";
+            case "presidential":
+                return "presidential";
             default:
                 return id.toLowerCase(); // "studio"
         }
@@ -200,11 +241,11 @@ function BookNowPage() {
                                     </div>
                                     <p className="text-stone-600 text-lg font-light">
                                         Browse our Eden Haven, Eden Residence,
-                                        and Eden Grand to match your needs
+                                        Eden Grand, and Presidential Suite to match your needs
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
                                     {availableRoomTypes.map((roomType) => {
                                         const roomData = getRoomData(
                                             roomType.id
@@ -215,11 +256,17 @@ function BookNowPage() {
                                         const galleryImages =
                                             apartmentGalleries[galleryKey]
                                                 ?.images || [];
+                                        const isPresidential =
+                                            roomType.id === "presidential";
 
                                         return (
                                             <Card
                                                 key={roomType.id}
-                                                className="group hover:-translate-y-2 transition-all duration-700 border-0 bg-white/80 backdrop-blur-sm overflow-hidden max-w-sm mx-auto w-full"
+                                                className={`group hover:-translate-y-2 transition-all duration-700 overflow-hidden max-w-sm mx-auto w-full ${
+                                                    isPresidential
+                                                        ? "border border-eden/30 bg-eden-beige/60 backdrop-blur-sm ring-1 ring-eden/25 shadow-md shadow-eden/15"
+                                                        : "border-0 bg-white/80 backdrop-blur-sm"
+                                                }`}
                                             >
                                                 <div
                                                     className="relative overflow-hidden cursor-pointer group"
@@ -258,9 +305,21 @@ function BookNowPage() {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="absolute top-6 right-6 bg-black/50 text-white text-xs md:text-sm px-3 py-1 rounded-md font-medium shadow-lg backdrop-blur-sm">
+                                                    <div
+                                                        className={`absolute top-6 right-6 text-xs md:text-sm px-3 py-1 rounded-md font-medium shadow-lg backdrop-blur-sm ${
+                                                            isPresidential
+                                                                ? "bg-eden/95 text-white"
+                                                                : "bg-black/50 text-white"
+                                                        }`}
+                                                    >
                                                         <div className="flex items-center space-x-1">
-                                                            <Ruler className="w-4 h-4 text-eden-dark" />
+                                                            <Ruler
+                                                                className={`w-4 h-4 ${
+                                                                    isPresidential
+                                                                        ? "text-white"
+                                                                        : "text-eden-dark"
+                                                                }`}
+                                                            />
                                                             <span>
                                                                 {roomData.size}
                                                             </span>
@@ -269,10 +328,22 @@ function BookNowPage() {
                                                 </div>
 
                                                 <CardHeader className="pb-4">
-                                                    <CardTitle className="text-2xl font-serif font-bold text-stone-800">
+                                                    <CardTitle
+                                                        className={`text-2xl font-serif tracking-tight ${
+                                                            isPresidential
+                                                                ? "font-semibold text-eden"
+                                                                : "font-bold text-stone-800"
+                                                        }`}
+                                                    >
                                                         {roomType.name}
                                                     </CardTitle>
-                                                    <CardDescription className="text-stone-600 text-base leading-relaxed font-light">
+                                                    <CardDescription
+                                                        className={`text-base leading-relaxed font-light ${
+                                                            isPresidential
+                                                                ? "text-eden-text"
+                                                                : "text-stone-600"
+                                                        }`}
+                                                    >
                                                         {roomType.description}
                                                     </CardDescription>
                                                 </CardHeader>
@@ -301,12 +372,25 @@ function BookNowPage() {
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex justify-center">
+                                                    <div className="flex flex-col gap-2">
                                                         <Button
                                                             className="w-full bg-eden hover:bg-emerald-700 text-white border-0 py-6 text-lg font-medium transition-all duration-300 rounded-xl"
                                                             onClick={() => handleBookNow(roomType)}
                                                         >
                                                             Book Now
+                                                        </Button>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            className="w-full border-stone-300 text-stone-700"
+                                                            onClick={() =>
+                                                                window.open(
+                                                                    getDetailPath(roomType),
+                                                                    "_blank"
+                                                                )
+                                                            }
+                                                        >
+                                                            View details
                                                         </Button>
                                                     </div>
                                                 </CardContent>

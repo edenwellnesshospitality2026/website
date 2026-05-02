@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="mb-4">
-              <a href="#" className="flex items-center">
+              <a href="/" className="flex items-center">
                 <span className="text-2xl font-serif font-semibold text-white">
                   <img
                     src="https://ik.imagekit.io/sxe8qsgazl/edenwellness/Eden-logo.png?updatedAt=1757394157718"
@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="#about"
+                  href="/#about"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   About Us
@@ -101,7 +101,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="#accommodations"
+                  href="/#choose-your-sanctuary"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   Explore Rooms
@@ -109,7 +109,31 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="#amenities"
+                  href="/book-now"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Book Now
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/booking"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Check availability
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/#membership"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Membership
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/#amenities"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   Amenities
@@ -117,7 +141,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="#gallery"
+                  href="/gallery"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   Gallery
@@ -125,7 +149,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="#faq"
+                  href="/#faq"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   FAQs
@@ -133,8 +157,65 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
+                  href="/live-at-eden"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Live at Eden
+                </a>
+              </li>
+            </ul>
+
+            <h5 className="font-serif text-lg mb-4 mt-8 text-white">
+              Our residences
+            </h5>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="/studio"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Eden Haven
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/1bhk"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Eden Residence
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/2bhk"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Eden Grand
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/presidential"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Presidential Suite
+                </a>
+              </li>
+            </ul>
+
+            <h5 className="font-serif text-lg mb-4 mt-8 text-white">Legal</h5>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="/privacy-policy"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
                   href="/cancellation-policy"
-                  target="_blank"
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   Cancellation Policy
@@ -207,13 +288,21 @@ const Footer: React.FC = () => {
               © {new Date().getFullYear()} Eden Wellness & Hospitality. All
               rights reserved.
             </p>
-            <div className="flex space-x-4 text-sm">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm justify-center md:justify-end">
               <a
-                href="/terms-privacy"
-                target="_blank"
+                href="/privacy-policy"
                 className="text-eden-light/90 hover:text-white transition-colors"
               >
                 Privacy Policy
+              </a>
+              <span className="text-eden-light/40 hidden sm:inline" aria-hidden>
+                |
+              </span>
+              <a
+                href="/cancellation-policy"
+                className="text-eden-light/90 hover:text-white transition-colors"
+              >
+                Cancellation Policy
               </a>
             </div>
           </div>

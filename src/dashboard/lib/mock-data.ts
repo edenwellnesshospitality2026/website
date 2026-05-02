@@ -75,6 +75,7 @@ export const ROOM_TYPES = [
   "Eden Residence",
   "Eden Suite 1BHK",
   "Eden Grand Suite 2BHK",
+  "Presidential Suite",
 ];
 
 export const RATE_PLANS: { code: RatePlanCode; label: string }[] = [

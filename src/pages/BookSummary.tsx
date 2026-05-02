@@ -117,6 +117,24 @@ const BookingSummaryPage = () => {
     });
 
     if (response.ok) {
+      void fetch(`${API_BASE}/api/booking-enquiries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: name,
+          email,
+          phone,
+          guests: selectedGuests,
+          checkIn: preferredCheckIn === "-" ? undefined : preferredCheckIn,
+          listingSlug: roomId,
+          roomName: room ?? undefined,
+          ratePlanSummary:
+            selectedPlans.map((p) => `${p.code}×${p.qty}`).join(", ") || undefined,
+          estimatedTotal: totalAmount,
+          notes,
+          sourceUrl: typeof window !== "undefined" ? window.location.href : undefined,
+        }),
+      }).catch(() => undefined);
       navigate("/thank-you");
     } else {
       const errorData = await response.json().catch(() => ({}));

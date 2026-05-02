@@ -64,6 +64,30 @@ export const roomTypes: RoomType[] = [
         },
     },
     {
+        id: "presidential",
+        name: "Presidential Suite",
+        image: "/assets/Presidential.webp",
+        size: "1800-2200 sq ft",
+        guests: 6,
+        startingPrice: 35000,
+        originalPrice: 40000,
+        roomsLeft: 1,
+        description:
+            "Our flagship residence with expanded living, premium finishes, and the highest level of space and privacy for extended stays and distinguished guests",
+        amenities: [
+            "WiFi",
+            "Full Kitchen",
+            "Multiple Bedrooms",
+            "Private Terraces",
+            "Air Conditioning",
+            "Dining & Lounge",
+        ],
+        weekdayPrice: {
+            withoutBreakfast: 30000,
+            withBreakfast: "",
+        },
+    },
+    {
         id: "3bhk",
         name: "3 BHK Apartment",
         image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&q=80",
@@ -179,6 +203,24 @@ export const roomCategories: RoomCategory[] = [
             "Master Bedroom",
             "Guest Bedroom",
             "Luxury Bathroom",
+        ],
+    },
+    {
+        id: "presidential-oasis",
+        name: "Presidential",
+        image: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1946%20Color%20Grade.jpg?updatedAt=1749653423612",
+        size: "2000 sq ft",
+        guests: 6,
+        startingPrice: 35000,
+        roomTypeId: "presidential",
+        description:
+            "Signature Presidential layout with expansive living, premium suites, and elevated valley-facing spaces",
+        amenities: [
+            "Multiple Suites",
+            "Private Dining",
+            "Panoramic Views",
+            "Premium Furnishings",
+            "Dedicated Lounge",
         ],
     },
 ];

@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
   };
 
   const scrollToSection = (sectionId: string) => {
-    let currentURL = window.location.href;
+    const currentURL = window.location.href;
     if (currentURL.includes("#") || currentURL.split("/")[3] == "") {
       const element = document.getElementById(sectionId);
       if (element) {
@@ -82,6 +82,12 @@ const Navbar: React.FC = () => {
           >
             Explore Rooms
           </button>
+          <a
+            href="/#membership"
+            className="text-eden-text hover:text-eden transition-colors"
+          >
+            Membership
+          </a>
           <button
             onClick={() => scrollToSection("amenities")}
             className="text-eden-text hover:text-eden transition-colors"
@@ -162,6 +168,14 @@ const Navbar: React.FC = () => {
               >
                 Explore Rooms
               </button>
+
+              <a
+                href="/#membership"
+                className="text-eden-text hover:text-eden py-2 px-4"
+                onClick={toggleMobileMenu}
+              >
+                Membership
+              </a>
 
               <a
                 href="/#amenities"

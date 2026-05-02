@@ -62,6 +62,14 @@ export default {
           accent: '#E8C8B0', // Soft peach/terracotta
           text: '#54514A', // Warm dark gray
         },
+        ivory: "#FFFDF7",
+        espresso: "#2F241D",
+        cocoa: "#4C3B31",
+        gold: "#C7A868",
+        "gold-deep": "#8F6A2E",
+        info: "#6D8BA8",
+        warning: "#C08B45",
+        success: "#5C8A63",
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -96,24 +104,37 @@ export default {
 					}
 				},
         'fade-in': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(10px)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)'
-          }
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(12px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          '0%': { opacity: '0', transform: 'scale(0.96)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.6s ease-out',
+        'fade-up': 'fade-up 0.35s ease-out both',
+        'scale-in': 'scale-in 0.25s ease-out both',
 			},
       fontFamily: {
         'serif': ['Playfair Display', 'serif'],
         'sans': ['Montserrat', 'sans-serif'],
+        'display': ['Playfair Display', 'serif'],
+      },
+      boxShadow: {
+        gold: "0 12px 32px -18px rgba(143, 106, 46, 0.65)",
+        soft: "0 8px 24px -16px rgba(40, 24, 14, 0.25)",
+      },
+      backgroundImage: {
+        "gradient-gold": "linear-gradient(135deg, #C7A868 0%, #8F6A2E 100%)",
+        "gradient-luxe": "linear-gradient(160deg, rgba(255,253,247,0.95) 0%, rgba(243,233,215,0.95) 100%)",
       },
 		}
 	},

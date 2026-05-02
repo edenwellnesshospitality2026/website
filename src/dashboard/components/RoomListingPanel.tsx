@@ -46,6 +46,14 @@ import {
   formatINR,
 } from "../lib/mock-data";
 import { toast } from "sonner";
+import { getToken } from "../auth/auth-service";
+import {
+  apiListingToRoomListing,
+  ratePlanToApi,
+  roomListingToApiPayload,
+} from "../lib/listing-api";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 interface Props {
   rooms: RoomListing[];
@@ -94,6 +102,10 @@ const emptyListing = (): RoomListing => ({
 
 export const RoomListingPanel = ({ rooms: initial }: Props) => {
   const [rooms, setRooms] = useState(initial);
+
+  useEffect(() => {
+    setRooms(initial);
+  }, [initial]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -149,38 +161,137 @@ export const RoomListingPanel = ({ rooms: initial }: Props) => {
     setRatePlansOpen(true);
   };
 
-  const saveListing = (payload: RoomListing) => {
-    setRooms((curr) => {
-      const idx = curr.findIndex((x) => x.id === payload.id);
-      if (idx >= 0) {
-        const next = [...curr];
-        next[idx] = payload;
-        return next;
+  const saveListing = async (payload: RoomListing): Promise<boolean> => {
+    const token = getToken();
+    if (!token) {
+      toast.error("Please sign in again.");
+      return false;
+    }
+    try {
+      const body = roomListingToApiPayload(payload);
+      const method = listingMode === "create" ? "POST" : "PUT";
+      const url =
+        listingMode === "create"
+          ? `${API_BASE}/api/listings`
+          : `${API_BASE}/api/listings/${encodeURIComponent(payload.id)}`;
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || `Save failed (${res.status})`);
+        return false;
       }
-      return [payload, ...curr];
-    });
+      const json = await res.json();
+      const mapped = apiListingToRoomListing(json.data as Record<string, unknown>);
+      setRooms((curr) => {
+        const idx = curr.findIndex((x) => x.id === mapped.id);
+        if (idx >= 0) {
+          const next = [...curr];
+          next[idx] = mapped;
+          return next;
+        }
+        return [mapped, ...curr];
+      });
+      toast.success(listingMode === "create" ? "Listing created" : "Listing updated");
+      return true;
+    } catch {
+      toast.error("Network error saving listing.");
+      return false;
+    }
   };
 
-  const deleteListing = (id: string) => {
-    setRooms((curr) => curr.filter((r) => r.id !== id));
-    toast.success("Listing deleted");
+  const deleteListing = async (id: string) => {
+    const token = getToken();
+    if (!token) {
+      toast.error("Please sign in again.");
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/api/listings/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok && res.status !== 204) {
+        toast.error("Could not delete listing.");
+        return;
+      }
+      setRooms((curr) => curr.filter((r) => r.id !== id));
+      toast.success("Listing deleted");
+    } catch {
+      toast.error("Network error deleting listing.");
+    }
   };
 
-  const updateInventory = (id: string, availableRooms: number) => {
-    setRooms((curr) =>
-      curr.map((r) =>
-        r.id === id ? { ...r, availableRooms } : r
-      )
-    );
-    toast.success("Inventory updated");
+  const updateInventory = async (id: string, availableRooms: number) => {
+    const token = getToken();
+    if (!token) {
+      toast.error("Please sign in again.");
+      return;
+    }
+    const room = rooms.find((r) => r.id === id);
+    try {
+      const res = await fetch(`${API_BASE}/api/listings/${encodeURIComponent(id)}/inventory`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          availableInventory: availableRooms,
+          totalInventory: room?.totalRooms,
+        }),
+      });
+      if (!res.ok) {
+        toast.error("Could not update inventory.");
+        return;
+      }
+      const json = await res.json();
+      const mapped = apiListingToRoomListing(json.data as Record<string, unknown>);
+      setRooms((curr) => curr.map((r) => (r.id === id ? mapped : r)));
+      toast.success("Inventory updated");
+    } catch {
+      toast.error("Network error updating inventory.");
+    }
   };
 
-  const updateRatePlans = (listingId: string, nextPlans: RatePlan[]) => {
-    setRooms((curr) =>
-      curr.map((r) =>
-        r.id === listingId ? { ...r, ratePlans: nextPlans } : r
-      )
-    );
+  const updateRatePlans = async (listingId: string, nextPlans: RatePlan[]): Promise<boolean> => {
+    const token = getToken();
+    if (!token) {
+      toast.error("Please sign in again.");
+      return false;
+    }
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/listings/${encodeURIComponent(listingId)}/rate-plans`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ratePlans: nextPlans.map((p) => ratePlanToApi(p)),
+          }),
+        }
+      );
+      if (!res.ok) {
+        toast.error("Could not update rate plans.");
+        return false;
+      }
+      const json = await res.json();
+      const mapped = apiListingToRoomListing(json.data as Record<string, unknown>);
+      setRooms((curr) => curr.map((r) => (r.id === listingId ? mapped : r)));
+      return true;
+    } catch {
+      toast.error("Network error updating rate plans.");
+      return false;
+    }
   };
 
   return (
@@ -352,7 +463,7 @@ const ListingDrawer = ({
   onOpenChange: (open: boolean) => void;
   mode: ListingMode;
   listing: RoomListing | null;
-  onSave: (listing: RoomListing) => void;
+  onSave: (listing: RoomListing) => boolean | void | Promise<boolean | void>;
 }) => {
   const readOnly = mode === "view";
   const [form, setForm] = useState<RoomListing>(emptyListing());
@@ -367,11 +478,11 @@ const ListingDrawer = ({
   const setField = <K extends keyof RoomListing>(key: K, value: RoomListing[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (readOnly) return;
-    onSave(safeForm);
-    toast.success(mode === "create" ? "Listing created" : "Listing updated");
+    const result = await onSave(safeForm);
+    if (result === false) return;
     onOpenChange(false);
   };
 
@@ -570,7 +681,10 @@ const RatePlanDialog = ({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   listing: RoomListing | null;
-  onSave: (listingId: string, plans: RatePlan[]) => void;
+  onSave: (
+    listingId: string,
+    plans: RatePlan[]
+  ) => boolean | void | Promise<boolean | void>;
 }) => {
   const [plans, setPlans] = useState<RatePlan[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -592,9 +706,10 @@ const RatePlanDialog = ({
     setPlans((curr) => curr.map((p) => (p.id === id ? { ...p, ...patch } : p)));
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!listing) return;
-    onSave(listing.id, plans);
+    const ok = await onSave(listing.id, plans);
+    if (ok === false) return;
     toast.success("Rate plans updated");
     onOpenChange(false);
   };

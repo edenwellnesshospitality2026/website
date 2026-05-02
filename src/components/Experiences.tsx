@@ -38,10 +38,10 @@ const ExperienceBlock: React.FC<ExperienceProps> = ({
         />
       </div>
       <div className="md:w-1/2 text-left">
-        <h3 className="text-2xl md:text-3xl font-serif text-eden-dark mb-3">
+        <h3 className="text-2xl md:text-3xl font-serif font-semibold text-eden mb-3 tracking-tight">
           {title}
         </h3>
-        <p className="text-eden-text mb-6">{description}</p>
+        <p className="text-eden-text leading-relaxed mb-6">{description}</p>
         {/* <button className="px-6 py-3 bg-eden-light/50 text-eden-dark rounded-lg font-medium hover:bg-eden hover:text-white transition-all duration-300">
           {button}
         </button> */}
@@ -68,19 +68,11 @@ const EdenExperiences: React.FC = () => {
       reverse: true,
     },
     {
-      title: "Relax and Socialize at The Nook Café & Community Spaces",
+      title: "Presidential Suite",
       description:
-        "Unwind with artisanal coffee and fresh bakes in a cozy atmosphere designed for connection. The Nook Café is perfect for casual gatherings, creative brainstorming, or peaceful moments with a book.",
-      img: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/eden-bakery-nook-cafe?updatedAt=1763400266284",
-      button: "Visit The Nook Café",
-    },
-    {
-      title: "Explore Outdoor Adventures & Curated Day Trips",
-      description:
-        "Embrace nature with guided trekking, river rafting, and cultural tours to nearby spiritual and scenic destinations including Mussoorie, Rishikesh, and Haridwar. Perfect for adventure seekers and wellness travelers alike.",
-      img: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/eden-scenic-view?updatedAt=1763400310434",
-      button: "Discover Experiences",
-      reverse: true,
+        "Our flagship residence with expanded living, premium finishes, and the highest level of space and privacy for extended stays and distinguished guests.",
+      img: "/assets/Presidential.webp",
+      button: "Explore Presidential Suite",
     },
   ];
 
@@ -97,8 +89,8 @@ const EdenExperiences: React.FC = () => {
           </h2>
           <div className="w-20 h-1 bg-eden mx-auto mb-6"></div>
           <p className="text-eden-text text-lg">
-            Immerse yourself in curated moments of rejuvenation, indulgence, and
-            exploration — all within the Eden way of living.
+            Immerse yourself in curated moments of rejuvenation, dining, and
+            elevated residence living — all within the Eden way of living.
           </p>
         </div>
 

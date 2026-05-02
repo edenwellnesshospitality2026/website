@@ -8,25 +8,6 @@ import { pushToDataLayer } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
-    // {
-    //     title: "",
-    //     subtitle: "",
-    //     description: "",
-    //     image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/6.png",
-    // },
-    // {
-    //   title: "",
-    //   subtitle: "",
-    //   description: "",
-    //   image:
-    //   "https://ik.imagekit.io/sxe8qsgazl/edenwellness/1.png",
-    // },
-    // {
-    //     title: "",
-    //     subtitle: "",
-    //     description: "",
-    //     image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(9).png",
-    // },
     {
         title: "Ultimate Luxury Wellness & Hospitality Retreat",
         subtitle: "in Dehradun Valley",
@@ -34,12 +15,27 @@ const slides = [
             "Experience premium wellness and hospitality in the Himalayas.",
         image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(10).png",
     },
-    // {
-    //     title: "",
-    //     subtitle: "",
-    //     description: "",
-    //     image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/7.png?updatedAt=1768405900425",
-    // },
+    {
+        title: "Curated Wellness Living",
+        subtitle: "for mindful getaways",
+        description:
+            "Stay in thoughtfully designed residences with curated amenities.",
+        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/6.png",
+    },
+    {
+        title: "Premium Suites & Residences",
+        subtitle: "crafted for comfort",
+        description:
+            "Choose from studio to grand suites tailored for every stay style.",
+        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/1.png",
+    },
+    {
+        title: "Where Nature Meets Hospitality",
+        subtitle: "in the lap of the hills",
+        description:
+            "Wake up to valley views and elevate your retreat experience.",
+        image: "https://ik.imagekit.io/sxe8qsgazl/edenwellness/READY%20TO%20MOVE%20IN%20only%20FEW%20UNITS%20LEFT%20(3820%20x%202160%20px)%20(9).png",
+    },
 ];
 
 const HeroCarousel: React.FC = () => {

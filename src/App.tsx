@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import StudioPage from "./pages/StudioPage";
 import OneBHKPage from "./pages/OneBHKPage";
 import TwoBHKPage from "./pages/TwoBHKPage";
+import PresidentialSuitePage from "./pages/PresidentialSuitePage";
 import GalleryPage from "./pages/GalleryPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import TermsPrivacyPage from "./pages/TermsPrivacyPage";
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/studio" element={<StudioPage />} />
         <Route path="/1bhk" element={<OneBHKPage />} />
         <Route path="/2bhk" element={<TwoBHKPage />} />
+        <Route path="/presidential" element={<PresidentialSuitePage />} />
         <Route path="/book-now" element={<BookNowPage />} />
         <Route path="/booking" element={<BookingEngineStylePage />} />
         <Route path="/book-summary" element={<BookSummary />} />

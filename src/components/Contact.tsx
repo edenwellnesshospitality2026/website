@@ -13,10 +13,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail } from "lucide-react";
 import "@/Styles/Contact.css";
-import { createClient } from "@supabase/supabase-js";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { pushToDataLayer } from "@/lib/utils";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 const containerStyle = {
   width: "400px",
@@ -27,12 +27,6 @@ const center = {
   lat: 30.4022508,
   lng: 78.069287,
 };
-
-// Create a single supabase client for interacting with your database
-const supabase = createClient(
-  "https://hergnmduadrsnvzgrtpe.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlcmdubWR1YWRyc252emdydHBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MzkxNzYsImV4cCI6MjA3NDMxNTE3Nn0.LvjBLedk7eQvgGCyp7VekiyR07K1O15SM-Tf1JLFMwA"
-);
 
 const ContactInfo: React.FC<{
   icon: React.ReactNode;
@@ -69,23 +63,28 @@ const Contact: React.FC = () => {
     }
     setErrorMsg("");
 
-    const { data, error } = await supabase
-      .from("eden-wellness")
-      .insert([
-        {
+    try {
+      const res = await fetch(`${API_BASE}/api/contact-enquiries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: Name,
-          email: Email || null,
-          message: Message || null,
-          phone: phone,
-          room_type: roomType || null,
-          source: window?.location?.href
-        },
-      ])
-      .select();
+          email: Email,
+          phone,
+          bookingType: roomType || undefined,
+          message: [Message, duration ? `Duration / stay: ${duration}` : ""]
+            .filter(Boolean)
+            .join("\n"),
+          sourceUrl: typeof window !== "undefined" ? window.location.href : undefined,
+        }),
+      });
 
-    if (error) {
-      setErrorMsg(error.message);
-    } else {
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setErrorMsg(typeof err.error === "string" ? err.error : "Could not send enquiry. Try again.");
+        return;
+      }
+
       pushToDataLayer("contact_button_click", { button_location: "lead-successful" });
       setIsSubmitted(true);
       setName("");
@@ -94,6 +93,8 @@ const Contact: React.FC = () => {
       setPhone("");
       setRoomType("");
       window.open("/thank-you", "_blank");
+    } catch {
+      setErrorMsg("Network error. Please try again.");
     }
 
     setTimeout(() => {

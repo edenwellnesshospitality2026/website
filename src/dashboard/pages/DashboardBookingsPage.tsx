@@ -30,7 +30,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
 const DashboardBookingsPage = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [rooms, setRooms] = useState<RoomListing[]>(mockRooms);
@@ -181,9 +181,11 @@ const DashboardBookingsPage = () => {
 
   const openNew = () => { setEditingBooking(null); setFormOpen(true); };
   const openEdit = (b: Booking) => { setEditingBooking(b); setFormOpen(true); };
+  const profileName = user?.email || "Eden";
+  const profileInitials = (user?.email?.slice(0, 2) || "ED").toUpperCase();
 
   return (
-    <div className="min-h-screen bg-background contour-bg">
+    <div className="dashboard-theme min-h-screen bg-background contour-bg">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur-xl">
         <div className="container flex h-20 items-center justify-between gap-4">
           <EdenLogo showTagline />
@@ -193,9 +195,9 @@ const DashboardBookingsPage = () => {
               <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-gold" />
             </Button>
             <div className="hidden sm:flex items-center gap-3 px-4 py-1.5 rounded-full border border-border/60 bg-card">
-              <div className="h-8 w-8 rounded-full bg-gradient-gold flex items-center justify-center text-ivory text-xs font-semibold shadow-gold">AR</div>
+              <div className="h-8 w-8 rounded-full bg-gradient-gold flex items-center justify-center text-ivory text-xs font-semibold shadow-gold">{profileInitials}</div>
               <div className="leading-tight">
-                <p className="text-xs font-medium text-espresso">Anya Rao</p>
+                <p className="text-xs font-medium text-espresso">{profileName}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Operations</p>
               </div>
             </div>

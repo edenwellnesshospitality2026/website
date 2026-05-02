@@ -72,3 +72,23 @@ body{
 .btn-secondary {
   @apply bg-white border border-eden text-eden hover:bg-eden-light px-6 py-3 rounded-md transition-all duration-300 ease-in-out font-medium;
 }
+
+@layer components {
+  .dashboard-theme {
+    background:
+      radial-gradient(1200px 500px at 10% -20%, rgba(199, 168, 104, 0.14), transparent 65%),
+      radial-gradient(900px 400px at 100% 0%, rgba(143, 106, 46, 0.08), transparent 70%),
+      hsl(var(--background));
+  }
+
+  .dashboard-theme .contour-bg {
+    background-image:
+      linear-gradient(rgba(143, 106, 46, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(143, 106, 46, 0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .dashboard-theme .luxe-card {
+    @apply rounded-2xl border border-[#e7ddc8] bg-[rgba(255,253,247,0.9)] shadow-soft backdrop-blur-sm;
+  }
+}

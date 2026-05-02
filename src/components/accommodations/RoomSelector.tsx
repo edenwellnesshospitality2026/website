@@ -10,7 +10,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Users, Leaf } from "lucide-react";
+import { Leaf } from "lucide-react";
 import { RoomType } from "@/types/accommodation";
 import { roomTypes } from "../../data/packageData";
 import { updatedRoomData } from "../../data/roomData";
@@ -106,6 +106,30 @@ const apartmentGalleries: Record<
             },
         ],
     },
+    presidential: {
+        images: [
+            {
+                src: "/assets/Presidential.webp",
+                alt: "Presidential Suite",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1949-Color-Grade.jpg?updatedAt=1749653418146",
+                alt: "Presidential bedroom",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1962-Color-Grade.jpg?updatedAt=1749653417819",
+                alt: "Presidential kitchen",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/_DSC1929-Color-Grade.jpg?updatedAt=1749653417734",
+                alt: "Presidential suite",
+            },
+            {
+                src: "https://ik.imagekit.io/sjuj0rpud/Eden%20Gallery/Gallery/2BHK/Cover---to-be-extracted-fom-the-video-cOLOR-GRADE.jpg?updatedAt=1749653416116",
+                alt: "Presidential residence",
+            },
+        ],
+    },
 };
 
 interface RoomTypeSelectorProps {
@@ -114,23 +138,23 @@ interface RoomTypeSelectorProps {
 const RoomTypeSelector = ({ onSelect }: RoomTypeSelectorProps) => {
     // Filter out 3BHK option
     const availableRoomTypes = roomTypes.filter((room) => room.id !== "3bhk");
-    const handleKnowMore = (roomType: RoomType) => {
-        // Open in new tab based on room type
-        let url = "";
-        switch (roomType.name.toLowerCase()) {
-            case "studio apartment":
-                url = "/studio";
-                break;
-            case "1 bhk apartment":
-                url = "/1bhk";
-                break;
-            case "2 bhk apartment":
-                url = "/2bhk";
-                break;
+    const getDetailPath = (roomType: RoomType) => {
+        switch (roomType.id) {
+            case "studio":
+                return "/studio";
+            case "1bhk":
+                return "/1bhk";
+            case "2bhk":
+                return "/2bhk";
+            case "presidential":
+                return "/presidential";
             default:
-                url = "/";
+                return "/";
         }
-        window.open(url, "_blank");
+    };
+
+    const handleKnowMore = (roomType: RoomType) => {
+        window.open(getDetailPath(roomType), "_blank");
     };
 
     // const RoomTypeSelector = () => {
@@ -173,6 +197,8 @@ const RoomTypeSelector = ({ onSelect }: RoomTypeSelectorProps) => {
                 return "onebhk";
             case "2bhk":
                 return "twobhk";
+            case "presidential":
+                return "presidential";
             default:
                 return id.toLowerCase(); // "studio"
         }
@@ -187,21 +213,26 @@ const RoomTypeSelector = ({ onSelect }: RoomTypeSelectorProps) => {
                     </h2>
                 </div>
                 <p className="text-stone-600 text-lg font-light">
-                    Browse our Eden Haven, Eden Residence, and Eden Grand
-                    Apartments to match your needs
+                    Browse our Eden Haven, Eden Residence, Eden Grand, and Presidential Suite
+                    residences to match your needs
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
                 {availableRoomTypes.map((roomType) => {
                     const roomData = getRoomData(roomType.id);
                     const galleryKey = getGalleryKey(roomType.id);
                     const galleryImages =
                         apartmentGalleries[galleryKey]?.images || [];
+                    const isPresidential = roomType.id === "presidential";
                     return (
                         <Card
                             key={roomType.id}
-                            className="group hover:-translate-y-2 transition-all duration-700 border-0 bg-white/80 backdrop-blur-sm overflow-hidden max-w-sm mx-auto w-full"
+                            className={`group hover:-translate-y-2 transition-all duration-700 overflow-hidden max-w-sm mx-auto w-full ${
+                                isPresidential
+                                    ? "border border-eden/30 bg-eden-beige/60 backdrop-blur-sm ring-1 ring-eden/25 shadow-md shadow-eden/15"
+                                    : "border-0 bg-white/80 backdrop-blur-sm"
+                            }`}
                         >
                             {/* <div className="relative overflow-hidden">
                 <img
@@ -244,111 +275,39 @@ const RoomTypeSelector = ({ onSelect }: RoomTypeSelectorProps) => {
                                         ))}
                                     </div>
                                 </div>
-                                <Badge className="absolute top-6 left-6 bg-white/90 text-stone-700 border-0 px-4 py-2 text-sm font-medium backdrop-blur-sm">
+                                <Badge
+                                    className={`absolute top-6 left-6 border-0 px-4 py-2 text-sm font-medium backdrop-blur-sm ${
+                                        isPresidential
+                                            ? "bg-eden/90 text-white"
+                                            : "bg-white/90 text-stone-700"
+                                    }`}
+                                >
                                     {roomData.size}
                                 </Badge>
                             </div>
 
                             <CardHeader className="pb-4">
-                                <CardTitle className="text-2xl font-serif font-bold text-stone-800">
+                                <CardTitle
+                                    className={`text-2xl font-serif tracking-tight ${
+                                        isPresidential
+                                            ? "font-semibold text-eden"
+                                            : "font-bold text-stone-800"
+                                    }`}
+                                >
                                     {roomType.name}
                                 </CardTitle>
-                                <CardDescription className="text-stone-600 text-base leading-relaxed font-light">
+                                <CardDescription
+                                    className={`text-base leading-relaxed font-light ${
+                                        isPresidential
+                                            ? "text-eden-text"
+                                            : "text-stone-600"
+                                    }`}
+                                >
                                     {roomType.description}
                                 </CardDescription>
                             </CardHeader>
 
                             <CardContent className="space-y-6">
-                                {false && <>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2 text-stone-600">
-                                        <Users className="w-5 h-5 text-eden" />
-                                        <span className="font-medium">
-                                            {roomData.guests}
-                                        </span>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <p className="text-sm text-stone-500 font-medium">
-                                            Starting from
-                                        </p>
-
-                                        {/* Original Price with strike-through */}
-                                        <p className="text-lg text-stone-400 line-through">
-                                            ₹
-                                            {roomType.originalPrice.toLocaleString()}
-                                        </p>
-
-                                        {/* Discounted Price */}
-                                        {(() => {
-                                            const today = new Date();
-                                            const day = today.getDay(); // 0 = Sunday, 6 = Saturday
-                                            const isWeekday =
-                                                day >= 1 && day <= 5;
-
-                                            return (
-                                                <div className="mt-3 space-y-2">
-                                                    {/* Pricing based on weekday/weekend */}
-                                                    {isWeekday &&
-                                                    roomType?.weekdayPrice ? (
-                                                        <div className="flex flex-col space-y-1">
-                                                            {roomType
-                                                                ?.weekdayPrice
-                                                                ?.withoutBreakfast && (
-                                                                <div>
-                                                                    <p className="text-2xl font-serif font-bold text-emerald-700">
-                                                                        ₹
-                                                                        {roomType.weekdayPrice.withoutBreakfast.toLocaleString()}
-                                                                    </p>
-                                                                    <p className="text-sm text-gray-600">
-                                                                        + taxes
-                                                                        EP
-                                                                    </p>
-                                                                </div>
-                                                            )}
-
-                                                            {roomType
-                                                                ?.weekdayPrice
-                                                                ?.withBreakfast && (
-                                                                <div>
-                                                                    <p className="text-2xl font-serif font-bold text-emerald-700">
-                                                                        ₹
-                                                                        {roomType.weekdayPrice.withBreakfast.toLocaleString()}
-                                                                    </p>
-                                                                    <p className="text-sm text-gray-600">
-                                                                        + taxes
-                                                                        (with
-                                                                        breakfast)
-                                                                    </p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex flex-col space-y-1">
-                                                            <p className="text-2xl font-serif font-bold text-emerald-700">
-                                                                ₹
-                                                                {roomType?.startingPrice?.toLocaleString()}
-                                                            </p>
-                                                            <p className="text-sm text-gray-600">
-                                                                + taxes (with
-                                                                breakfast)
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })()}
-
-                                        <p className="text-sm text-stone-500">
-                                            per night
-                                        </p>
-                                    </div>
-                                </div>
-                                *//
-
-                             
-                                </>}
-                                
                                    {/* Rooms left info */}
                                 {/* <div className="text-center">
                                     <p className="text-sm font-semibold text-red-600">
@@ -357,15 +316,22 @@ const RoomTypeSelector = ({ onSelect }: RoomTypeSelectorProps) => {
                                     </p>
                                 </div> */}
 
-                                <div className="flex justify-center">
+                                <div className="flex flex-col gap-2">
                                     <Button
                                         className="w-full bg-eden hover:bg-emerald-700 text-white border-0 py-6 text-lg font-medium transition-all duration-300 rounded-xl"
                                         onClick={() => {
-                                            window.location.href =
-                                                "http://localhost:8080/booking";
+                                            window.location.href = "/booking";
                                         }}
                                     >
                                         Book Now
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full border-stone-300 text-stone-700"
+                                        onClick={() => handleKnowMore(roomType)}
+                                    >
+                                        View details
                                     </Button>
                                 </div>
                             </CardContent>
