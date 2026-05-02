@@ -276,9 +276,14 @@ const Contact: React.FC = () => {
                   icon={<Phone />}
                   title="Phone"
                   content={
-                    <a href="tel:+917533909333" className="hover:text-eden">
-                      +91-7533909333
-                    </a>
+                    <div className="space-y-1">
+                      <a href="tel:+917533909333" className="hover:text-eden block">
+                        +91-7533909333
+                      </a>
+                      <a href="tel:+918448194646" className="hover:text-eden block">
+                        +91-8448194646
+                      </a>
+                    </div>
                   }
                 />
 
@@ -288,11 +293,11 @@ const Contact: React.FC = () => {
                   content={
                     <div className="space-y-1">
                       <a
-                        href="https://mail.google.com/mail/?view=cm&fs=1&to=info@edenwellnesshospitality.com"
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=reservations@edenwellnesshospitality.com"
                         target="_blank"
                         className="hover:text-eden block"
                       >
-                        info@edenwellnesshospitality.com
+                        reservations@edenwellnesshospitality.com
                       </a>
                     </div>
                   }

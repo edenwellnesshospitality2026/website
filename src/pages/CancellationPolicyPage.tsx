@@ -75,7 +75,7 @@ const CancellationPolicyPage = () => {
               <br />
               Email: reservations@edengraciousliving.com
               <br />
-              Phone: +91-7533909333
+              Phone: +91-7533909333, +91-8448194646
               <br />
               Online: Through your booking confirmation link
             </p>

@@ -61,9 +61,19 @@ const ThankYouPage = () => {
               <p className="text-emerald-700 text-sm mb-4">
               If you have urgent questions or want to speak with someone immediately, feel free to reach out.
               </p>
-              <div className="flex items-center justify-center space-x-2 text-emerald-700">
-                <Phone className="w-4 h-4" />
-                <a href="tel:+917533909333" ><span className="font-medium">+91-7533909333</span></a>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-emerald-700">
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-4 h-4 shrink-0" />
+                  <a href="tel:+917533909333">
+                    <span className="font-medium">+91-7533909333</span>
+                  </a>
+                </div>
+                <span className="hidden sm:inline text-emerald-400" aria-hidden>
+                  |
+                </span>
+                <a href="tel:+918448194646">
+                  <span className="font-medium">+91-8448194646</span>
+                </a>
               </div>
             </div>
           </div>

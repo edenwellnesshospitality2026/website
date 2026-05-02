@@ -185,17 +185,23 @@ const TermsPrivacyPage = () => {
                   questions, account-related concerns, and data requests.
                 </p>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <a
-                    href="tel:+917533909333"
-                    className="rounded-2xl border border-eden/20 bg-white p-4 transition-colors hover:border-eden/40"
-                  >
+                  <div className="rounded-2xl border border-eden/20 bg-white p-4 transition-colors hover:border-eden/40">
                     <p className="text-xs uppercase tracking-[0.12em] text-eden-dark/70">
                       Phone
                     </p>
-                    <p className="mt-2 text-stone-700">+91-7533909333</p>
-                  </a>
+                    <p className="mt-2 text-stone-700">
+                      <a href="tel:+917533909333" className="hover:text-eden-dark">
+                        +91-7533909333
+                      </a>
+                    </p>
+                    <p className="mt-1 text-stone-700">
+                      <a href="tel:+918448194646" className="hover:text-eden-dark">
+                        +91-8448194646
+                      </a>
+                    </p>
+                  </div>
                   <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@edenwellnesshospitality.com"
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=reservations@edenwellnesshospitality.com"
                     target="_blank"
                     rel="noreferrer"
                     className="rounded-2xl border border-eden/20 bg-white p-4 transition-colors hover:border-eden/40"
@@ -204,7 +210,7 @@ const TermsPrivacyPage = () => {
                       Email
                     </p>
                     <p className="mt-2 break-all text-stone-700">
-                      info@edenwellnesshospitality.com
+                      reservations@edenwellnesshospitality.com
                     </p>
                   </a>
                 </div>

@@ -100,7 +100,7 @@ const MembershipPlans = () => (
                   Talk to our team
                 </Button>
                 <Button variant="outline" className="w-full border-eden/40 text-eden-dark" asChild>
-                  <a href="mailto:info@edenwellnesshospitality.com?subject=Eden%20Membership%20Inquiry">
+                  <a href="mailto:reservations@edenwellnesshospitality.com?subject=Eden%20Membership%20Inquiry">
                     Email membership
                   </a>
                 </Button>

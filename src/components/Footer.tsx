@@ -165,44 +165,6 @@ const Footer: React.FC = () => {
               </li>
             </ul>
 
-            <h5 className="font-serif text-lg mb-4 mt-8 text-white">
-              Our residences
-            </h5>
-            <ul className="space-y-2">
-              <li>
-                <a
-                  href="/studio"
-                  className="text-eden-light/90 hover:text-white transition-colors"
-                >
-                  Eden Haven
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/1bhk"
-                  className="text-eden-light/90 hover:text-white transition-colors"
-                >
-                  Eden Residence
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/2bhk"
-                  className="text-eden-light/90 hover:text-white transition-colors"
-                >
-                  Eden Grand
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/presidential"
-                  className="text-eden-light/90 hover:text-white transition-colors"
-                >
-                  Presidential Suite
-                </a>
-              </li>
-            </ul>
-
             <h5 className="font-serif text-lg mb-4 mt-8 text-white">Legal</h5>
             <ul className="space-y-2">
               <li>
@@ -239,6 +201,14 @@ const Footer: React.FC = () => {
                   className="text-eden-light/90 hover:text-white transition-colors"
                 >
                   +91-7533909333
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+918448194646"
+                  className="text-eden-light/90 hover:text-white transition-colors"
+                >
+                  +91-8448194646
                 </a>
               </li>
               <li>

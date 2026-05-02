@@ -547,12 +547,18 @@ const GoogleAdsLandingPage = () => {
                     <p className="text-sm text-stone-700 font-medium">
                       Prefer to speak first?
                     </p>
-                    <div className="mt-3 flex flex-col sm:flex-row gap-3">
+                    <div className="mt-3 flex flex-col sm:flex-row flex-wrap gap-3">
                       <a
                         href="tel:+917533909333"
                         className="inline-flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:bg-stone-50"
                       >
-                        <Phone size={16} /> Call Now
+                        <Phone size={16} /> +91-7533909333
+                      </a>
+                      <a
+                        href="tel:+918448194646"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:bg-stone-50"
+                      >
+                        <Phone size={16} /> +91-8448194646
                       </a>
                       <a
                         href="mailto:reservations@edenwellnesshospitality.com"
