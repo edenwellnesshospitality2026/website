@@ -59,6 +59,9 @@ export type RoomCardDoc = {
   published: boolean;
   bookHref?: string;
   startingPrice?: number;
+  rateEp?: number;
+  rateCp?: number;
+  rateMap?: number;
   showPricing?: boolean;
 };
 
@@ -77,6 +80,9 @@ export type PresidentialSuiteDoc = {
   bookHref?: string;
   bookButtonLabel?: string;
   startingPrice?: number;
+  rateEp?: number;
+  rateCp?: number;
+  rateMap?: number;
   showPricing?: boolean;
 };
 

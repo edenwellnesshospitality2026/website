@@ -36,6 +36,9 @@ export function buildDisplayRoomTypes(
         typeof card?.startingPrice === "number" && !Number.isNaN(card.startingPrice)
           ? card.startingPrice
           : base.startingPrice,
+      ...(typeof card?.rateEp === "number" && !Number.isNaN(card.rateEp) ? { rateEp: card.rateEp } : {}),
+      ...(typeof card?.rateCp === "number" && !Number.isNaN(card.rateCp) ? { rateCp: card.rateCp } : {}),
+      ...(typeof card?.rateMap === "number" && !Number.isNaN(card.rateMap) ? { rateMap: card.rateMap } : {}),
       originalPrice: base.originalPrice,
       roomsLeft: base.roomsLeft,
     });
@@ -55,6 +58,15 @@ export function buildDisplayRoomTypes(
         !Number.isNaN(presidential.startingPrice)
           ? presidential.startingPrice
           : presBase.startingPrice,
+      ...(typeof presidential?.rateEp === "number" && !Number.isNaN(presidential.rateEp)
+        ? { rateEp: presidential.rateEp }
+        : {}),
+      ...(typeof presidential?.rateCp === "number" && !Number.isNaN(presidential.rateCp)
+        ? { rateCp: presidential.rateCp }
+        : {}),
+      ...(typeof presidential?.rateMap === "number" && !Number.isNaN(presidential.rateMap)
+        ? { rateMap: presidential.rateMap }
+        : {}),
       originalPrice: presBase.originalPrice,
       roomsLeft: presBase.roomsLeft,
     });

@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { roomTypes } from "@/data/packageData";
 import { updatedRoomData } from "@/data/roomData";
+import { buildRoomPlansFromRoomType } from "@/lib/booking-plan-rates";
 
 const monthNames = [
   "January",
@@ -402,33 +403,17 @@ const BookingEngineStylePage: React.FC = () => {
                   updatedRoomData[room.id as keyof typeof updatedRoomData];
                 const maxGuests = roomData?.maxGuests ?? room.guests;
                 const isExpanded = expandedRoomId === room.id;
-                const discountPercent = room.originalPrice
+                const epShow = room.rateEp ?? room.startingPrice;
+                const hasRealDiscount =
+                  !!room.originalPrice &&
+                  room.originalPrice > 0 &&
+                  epShow < room.originalPrice;
+                const discountPercent = hasRealDiscount
                   ? Math.round(
-                      ((room.originalPrice - room.startingPrice) /
-                        room.originalPrice) *
-                        100
+                      ((room.originalPrice! - epShow) / room.originalPrice!) * 100
                     )
                   : 0;
-                const roomPlans = [
-                  {
-                    code: "EP",
-                    name: "Room Only",
-                    original: room.originalPrice ?? room.startingPrice + 2500,
-                    current: room.startingPrice,
-                  },
-                  {
-                    code: "CP",
-                    name: "Breakfast Included",
-                    original: (room.originalPrice ?? room.startingPrice + 2500) + 700,
-                    current: room.startingPrice + 525,
-                  },
-                  {
-                    code: "MAP",
-                    name: "Breakfast and lunch or dinner",
-                    original: (room.originalPrice ?? room.startingPrice + 2500) + 1700,
-                    current: room.startingPrice + 1500,
-                  },
-                ];
+                const roomPlans = buildRoomPlansFromRoomType(room);
 
                 const selectedRooms = roomPlans.reduce((sum, plan) => {
                   const key = `${room.id}-${plan.code}`;
@@ -483,16 +468,16 @@ const BookingEngineStylePage: React.FC = () => {
 
                       <div className="p-4 border-l border-[#ddd0b4] flex flex-col">
                         <p className="text-[#4f483f] text-sm">Starting From</p>
-                        {room.originalPrice ? (
+                        {hasRealDiscount ? (
                           <p className="text-sm text-[#a44]">
                             -{discountPercent}%{" "}
                             <span className="line-through">
-                              ₹{room.originalPrice.toLocaleString()}
+                              ₹{room.originalPrice!.toLocaleString()}
                             </span>
                           </p>
                         ) : null}
                         <p className="text-5xl font-bold text-[#1e1b16] mt-1">
-                          ₹{room.startingPrice.toLocaleString()}
+                          ₹{epShow.toLocaleString()}
                         </p>
                         <p className="text-sm text-[#6f675a]">Avg per night</p>
                         <p className="text-sm text-[#6f675a] mb-5">taxes excluded</p>
@@ -539,26 +524,37 @@ const BookingEngineStylePage: React.FC = () => {
                           </div>
                         </div>
                         <div className="p-4 border-r border-[#ddd0b4]">
-                          <p className="text-[#4f483f] font-semibold mb-3">Rooms</p>
+                          <p className="text-[#4f483f] font-semibold mb-1">Rooms</p>
+                          <p className="text-[11px] text-[#6f675a] mb-3 leading-snug">
+                            Pick one meal plan; quantity is rooms on that plan (same room stock for EP / CP / MAP).
+                          </p>
                           <div className="space-y-4">
                             {roomPlans.map((plan) => {
                               const key = `${room.id}-${plan.code}`;
                               const selected = planSelections[key] ?? 0;
-                              const maxSelectable = Math.max(
-                                1,
-                                roomsCount,
-                                room.roomsLeft ?? 1
+                              const inventory =
+                                typeof room.roomsLeft === "number" && room.roomsLeft >= 0
+                                  ? room.roomsLeft
+                                  : 99;
+                              const maxSelectable = Math.min(
+                                Math.max(1, roomsCount),
+                                inventory
                               );
                               return (
                                 <select
                                   key={plan.code}
                                   value={selected}
-                                  onChange={(e) =>
-                                    setPlanSelections((prev) => ({
-                                      ...prev,
-                                      [key]: Number(e.target.value),
-                                    }))
-                                  }
+                                  onChange={(e) => {
+                                    const nextQty = Number(e.target.value);
+                                    setPlanSelections((prev) => {
+                                      const next = { ...prev };
+                                      for (const p of roomPlans) {
+                                        next[`${room.id}-${p.code}`] = 0;
+                                      }
+                                      next[key] = nextQty;
+                                      return next;
+                                    });
+                                  }}
                                   className="w-full border border-[#d6c8a7] bg-white px-2 py-2"
                                 >
                                   <option value={0}>0</option>

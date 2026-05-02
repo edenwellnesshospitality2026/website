@@ -29,6 +29,9 @@ type FormState = {
   bookHref: string;
   bookButtonLabel: string;
   startingPrice: string;
+  rateEp: string;
+  rateCp: string;
+  rateMap: string;
   showPricing: boolean;
 };
 
@@ -41,6 +44,9 @@ const emptyForm = (): FormState => ({
   bookHref: "/booking",
   bookButtonLabel: "Book Now",
   startingPrice: "",
+  rateEp: "",
+  rateCp: "",
+  rateMap: "",
   showPricing: false,
 });
 
@@ -61,8 +67,18 @@ function docToForm(d: PresidentialSuiteDoc): FormState {
       d.startingPrice !== undefined && d.startingPrice !== null ?
         String(d.startingPrice)
       : "",
+    rateEp: d.rateEp !== undefined && d.rateEp !== null ? String(d.rateEp) : "",
+    rateCp: d.rateCp !== undefined && d.rateCp !== null ? String(d.rateCp) : "",
+    rateMap: d.rateMap !== undefined && d.rateMap !== null ? String(d.rateMap) : "",
     showPricing: Boolean(d.showPricing),
   };
+}
+
+function optionalRupee(raw: string): number | undefined {
+  const t = raw.trim();
+  if (t === "") return undefined;
+  const n = Number(t);
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
 }
 
 const DashboardCmsPresidentialPage = () => {
@@ -119,6 +135,9 @@ const DashboardCmsPresidentialPage = () => {
     if (!token) return;
     const startingPrice =
       form.startingPrice.trim() === "" ? undefined : Number(form.startingPrice);
+    const rateEp = optionalRupee(form.rateEp);
+    const rateCp = optionalRupee(form.rateCp);
+    const rateMap = optionalRupee(form.rateMap);
     try {
       await putPresidentialSuite(token, {
         headline: form.headline.trim(),
@@ -133,6 +152,9 @@ const DashboardCmsPresidentialPage = () => {
         bookHref: form.bookHref.trim() || "/booking",
         bookButtonLabel: form.bookButtonLabel.trim() || "Book Now",
         startingPrice: Number.isFinite(startingPrice as number) ? startingPrice : undefined,
+        rateEp: rateEp ?? null,
+        rateCp: rateCp ?? null,
+        rateMap: rateMap ?? null,
         showPricing: form.showPricing,
       });
       toast.success("Presidential Suite saved");
@@ -205,9 +227,10 @@ const DashboardCmsPresidentialPage = () => {
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="startingPrice">Starting price (₹)</Label>
+                <Label htmlFor="startingPrice">Starting price (₹) — EP base if rates below empty</Label>
                 <Input
                   id="startingPrice"
+                  inputMode="numeric"
                   value={form.startingPrice}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, startingPrice: e.target.value }))
@@ -223,6 +246,44 @@ const DashboardCmsPresidentialPage = () => {
                     setForm((f) => ({ ...f, bookButtonLabel: e.target.value }))
                   }
                 />
+              </div>
+            </div>
+            <div className="mt-5 rounded-xl border border-border/60 bg-muted/15 px-3 py-3 space-y-3">
+              <p className="text-sm font-medium text-espresso">Rate plans (₹ / night, excl. taxes)</p>
+              <p className="text-xs text-muted-foreground">
+                Leave blank to auto-calculate CP/MAP from starting price. Optional overrides for /booking.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-1">
+                  <Label htmlFor="rateEp">EP — Room only</Label>
+                  <Input
+                    id="rateEp"
+                    inputMode="numeric"
+                    placeholder="Optional"
+                    value={form.rateEp}
+                    onChange={(e) => setForm((f) => ({ ...f, rateEp: e.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label htmlFor="rateCp">CP — Breakfast</Label>
+                  <Input
+                    id="rateCp"
+                    inputMode="numeric"
+                    placeholder="Optional"
+                    value={form.rateCp}
+                    onChange={(e) => setForm((f) => ({ ...f, rateCp: e.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label htmlFor="rateMap">MAP — Half board</Label>
+                  <Input
+                    id="rateMap"
+                    inputMode="numeric"
+                    placeholder="Optional"
+                    value={form.rateMap}
+                    onChange={(e) => setForm((f) => ({ ...f, rateMap: e.target.value }))}
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-5 grid gap-2 sm:max-w-lg">

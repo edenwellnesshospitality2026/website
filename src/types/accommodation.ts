@@ -12,6 +12,10 @@ export interface RoomType {
     originalPrice: number;
     roomsLeft: number;
     weekdayPrice: any;
+    /** CMS nightly rates (₹ excl. taxes). When absent, booking derives CP/MAP from startingPrice. */
+    rateEp?: number;
+    rateCp?: number;
+    rateMap?: number;
 }
 
 export interface RoomCategory {
