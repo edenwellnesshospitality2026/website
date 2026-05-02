@@ -26,6 +26,14 @@ import { getToken } from "../auth/auth-service";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
 
+function ratePlanBadgeFromSummary(summary: unknown): Booking["ratePlan"] {
+  if (typeof summary !== "string") return "EP";
+  const m = /\b(EP|CP|MAP)\b/.exec(summary);
+  const code = m?.[1];
+  if (code === "CP" || code === "MAP" || code === "EP") return code;
+  return "EP";
+}
+
 const DashboardBookingsPage = () => {
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
@@ -61,7 +69,9 @@ const DashboardBookingsPage = () => {
             email: booking.email ?? "",
             phone: booking.phone,
             roomType: booking.roomType,
-            ratePlan: "CP",
+            ratePlan: ratePlanBadgeFromSummary(booking.ratePlanSummary),
+            ratePlanSummary: booking.ratePlanSummary,
+            listingSlug: booking.listingSlug,
             checkIn: booking.checkIn ?? "",
             checkOut: booking.checkOut ?? "",
             adults: booking.adults ?? 0,

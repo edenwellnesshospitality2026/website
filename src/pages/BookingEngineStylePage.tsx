@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getPresidentialSuite, getRoomCards } from "@/lib/cms-api";
+import { buildDisplayRoomTypes } from "@/lib/booking-room-merge";
 import {
   ChevronLeft,
   ChevronRight,
@@ -83,7 +86,21 @@ const formatDate = (date: Date | null) =>
 
 const BookingEngineStylePage: React.FC = () => {
   const navigate = useNavigate();
-  const displayRooms = roomTypes.filter((room) => room.id !== "3bhk");
+  const { data: roomCards } = useQuery({
+    queryKey: ["cms", "room-cards"],
+    queryFn: getRoomCards,
+    staleTime: 60_000,
+  });
+  const { data: presidentialSuite } = useQuery({
+    queryKey: ["cms", "presidential-suite"],
+    queryFn: getPresidentialSuite,
+    staleTime: 60_000,
+  });
+
+  const displayRooms = useMemo(
+    () => buildDisplayRoomTypes(roomCards, presidentialSuite ?? null),
+    [roomCards, presidentialSuite]
+  );
   const today = useMemo(() => new Date(), []);
   const tomorrow = useMemo(() => {
     const d = new Date();
@@ -155,10 +172,12 @@ const BookingEngineStylePage: React.FC = () => {
       updatedRoomData[roomType.id as keyof typeof updatedRoomData]?.maxGuests ||
       roomType.guests;
     const totalRoomsSelected = selectedPlanRows.reduce((sum, row) => sum + row.qty, 0);
-    const totalAmount = selectedPlanRows.reduce(
+    const nightCount = Math.max(1, nights);
+    const perNightSubtotal = selectedPlanRows.reduce(
       (sum, row) => sum + row.qty * row.current,
       0
     );
+    const totalAmount = perNightSubtotal * nightCount;
 
     return {
       room: roomType.name,
@@ -169,6 +188,8 @@ const BookingEngineStylePage: React.FC = () => {
       price: roomType.startingPrice.toString(),
       selectedPlans: selectedPlanRows,
       selectedRooms: totalRoomsSelected,
+      perNightSubtotal,
+      nights: nightCount,
       totalAmount,
       checkIn: checkIn ? checkIn.toISOString().slice(0, 10) : null,
       checkOut: checkOut ? checkOut.toISOString().slice(0, 10) : null,

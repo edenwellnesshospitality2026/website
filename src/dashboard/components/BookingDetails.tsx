@@ -24,8 +24,21 @@ export const BookingDetails = ({ booking, onClose, onEdit }: Props) => {
               <BookingStatusBadge status={booking.status} />
             </div>
             <DialogTitle className="font-display text-3xl text-espresso">{booking.guestName}</DialogTitle>
-            <DialogDescription className="flex items-center gap-2 text-cocoa/80">
-              <MapPin className="h-3.5 w-3.5" /> {booking.roomType} · Rate Plan {booking.ratePlan}
+            <DialogDescription className="flex flex-col gap-1 text-cocoa/80">
+              <span className="flex items-center gap-2">
+                <MapPin className="h-3.5 w-3.5 shrink-0" />{" "}
+                <span className="line-clamp-2">{booking.roomType}</span>
+              </span>
+              {booking.listingSlug ?
+                <span className="text-xs font-mono text-muted-foreground">Slug: {booking.listingSlug}</span>
+              : null}
+              {booking.ratePlanSummary ?
+                <span className="text-sm text-foreground/90 leading-snug">{booking.ratePlanSummary}</span>
+              : (
+                <span>
+                  Rate plan code: <strong>{booking.ratePlan}</strong>
+                </span>
+              )}
             </DialogDescription>
           </DialogHeader>
         </div>

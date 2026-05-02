@@ -11,7 +11,7 @@ export const roomTypes: RoomType[] = [
         originalPrice: 9000,
         roomsLeft: 1,
         description:
-            "Cozy Eden Haven(studio apartment) perfect for solo travelers seeking comfort and wellness",
+            "Cozy Eden Haven (studio apartment) perfect for solo travelers seeking comfort and wellness",
         amenities: ["WiFi", "Kitchenette", "Balcony", "Air Conditioning"],
         weekdayPrice: {
             withoutBreakfast: 6000,

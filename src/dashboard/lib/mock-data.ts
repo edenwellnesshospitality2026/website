@@ -15,6 +15,9 @@ export interface Booking {
   phone: string;
   roomType: string;
   ratePlan: RatePlanCode;
+  /** Full EP/CP/MAP breakdown from website booking flow */
+  ratePlanSummary?: string;
+  listingSlug?: string;
   checkIn: string;
   checkOut: string;
   adults: number;
