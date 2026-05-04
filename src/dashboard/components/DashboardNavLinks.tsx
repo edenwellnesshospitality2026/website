@@ -7,6 +7,7 @@ import {
   CreditCard,
   Home,
   Image,
+  Inbox,
   LayoutGrid,
   UserCircle,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const LINKS: readonly {
 }[] = [
   { to: "/dashboard/account", label: "Account", end: true, icon: UserCircle },
   { to: "/dashboard/bookings", label: "Bookings", end: true, icon: Calendar },
+  { to: "/dashboard/contact-enquiries", label: "Contact enquiries", end: true, icon: Inbox },
   { to: "/dashboard/cms/presidential-suite", label: "Presidential", end: false, icon: Building2 },
   { to: "/dashboard/cms/room-cards", label: "Room cards", end: false, icon: LayoutGrid },
   { to: "/dashboard/cms/gallery", label: "Gallery", end: false, icon: Image },

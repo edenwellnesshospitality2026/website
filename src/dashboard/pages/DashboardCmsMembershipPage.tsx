@@ -57,7 +57,7 @@ const emptyForm = (): FormState => ({
   featuresText: "",
   isPopular: false,
   primaryCtaLabel: "Talk to our team",
-  primaryCtaHref: "#contact",
+  primaryCtaHref: "/#contact",
   secondaryCtaLabel: "",
   secondaryCtaHref: "",
   sortOrder: 0,

@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +17,7 @@ const PLANS_FALLBACK = [
     features: ["Preferred booking windows", "Member rates on select stays", "Seasonal wellness updates"],
     isPopular: false,
     primaryCtaLabel: "Talk to our team",
-    primaryCtaHref: "#contact",
+    primaryCtaHref: "/#contact",
   },
   {
     title: "Signature Member",
@@ -29,7 +31,7 @@ const PLANS_FALLBACK = [
     ],
     isPopular: true,
     primaryCtaLabel: "Talk to our team",
-    primaryCtaHref: "#contact",
+    primaryCtaHref: "/#contact",
   },
   {
     title: "Founders Circle",
@@ -43,40 +45,50 @@ const PLANS_FALLBACK = [
     ],
     isPopular: false,
     primaryCtaLabel: "Talk to our team",
-    primaryCtaHref: "#contact",
+    primaryCtaHref: "/#contact",
   },
 ];
 
-const scrollToContact = () => {
-  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-};
-
-function runTierCta(tier: MembershipTierDoc | (typeof PLANS_FALLBACK)[number]) {
-  const href =
-    "primaryCtaHref" in tier && tier.primaryCtaHref ?
-      tier.primaryCtaHref
-    : "#contact";
-  const label =
-    "primaryCtaLabel" in tier && tier.primaryCtaLabel ?
-      tier.primaryCtaLabel
-    : "Talk to our team";
-
-  if (!href || href === "#contact") {
-    scrollToContact();
-    return;
-  }
-  if (href.startsWith("tel:") || href.startsWith("mailto:")) {
-    window.location.href = href;
-    return;
-  }
-  if (href.startsWith("#")) {
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
-    return;
-  }
-  window.open(href, "_blank", "noopener,noreferrer");
-}
-
 const MembershipPlans = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const goToBookATable = useCallback(() => {
+    if (location.pathname === "/") {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate({ pathname: "/", hash: "contact" });
+    }
+  }, [location.pathname, navigate]);
+
+  const handleTierCta = useCallback(
+    (plan: MembershipTierDoc | (typeof PLANS_FALLBACK)[number]) => {
+      const raw =
+        "primaryCtaHref" in plan && plan.primaryCtaHref ? plan.primaryCtaHref : "";
+      const href = raw.trim();
+      const h = href.toLowerCase();
+
+      if (!href || h === "#contact" || h === "/#contact" || h.startsWith("tel:") || h.startsWith("mailto:")) {
+        goToBookATable();
+        return;
+      }
+      if (href.startsWith("#")) {
+        if (location.pathname === "/") {
+          document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          navigate({ pathname: "/", hash: href.slice(1) });
+        }
+        return;
+      }
+      if (/^https?:\/\//i.test(href)) {
+        window.open(href, "_blank", "noopener,noreferrer");
+        return;
+      }
+      window.location.assign(href);
+    },
+    [goToBookATable, location.pathname, navigate]
+  );
+
   const { data: tiers } = useQuery({
     queryKey: ["cms", "membership-tiers"],
     queryFn: getMembershipTiers,
@@ -158,7 +170,7 @@ const MembershipPlans = () => {
                   <Button
                     className="w-full bg-eden hover:bg-eden-dark text-white"
                     type="button"
-                    onClick={() => runTierCta(plan)}
+                    onClick={() => handleTierCta(plan)}
                   >
                     {ctaLabel}
                   </Button>

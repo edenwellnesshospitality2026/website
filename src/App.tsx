@@ -28,6 +28,7 @@ import DashboardCmsMembershipPage from "./dashboard/pages/DashboardCmsMembership
 import DashboardCmsStoriesPage from "./dashboard/pages/DashboardCmsStoriesPage";
 import DashboardCmsSitePage from "./dashboard/pages/DashboardCmsSitePage";
 import DashboardAccountPage from "./dashboard/pages/DashboardAccountPage";
+import DashboardContactEnquiriesPage from "./dashboard/pages/DashboardContactEnquiriesPage";
 import { AuthProvider } from "./dashboard/auth/AuthContext";
 import { ProtectedRoute } from "./dashboard/auth/ProtectedRoute";
 
@@ -84,6 +85,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <DashboardBookingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/contact-enquiries"
+          element={
+            <ProtectedRoute>
+              <DashboardContactEnquiriesPage />
             </ProtectedRoute>
           }
         />

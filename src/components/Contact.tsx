@@ -11,6 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { MapPin, Phone, Mail } from "lucide-react";
 import "@/Styles/Contact.css";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
@@ -45,7 +52,7 @@ const ContactInfo: React.FC<{
 };
 
 const Contact: React.FC = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [Name, setName] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [Email, setEmail] = useState("");
@@ -86,21 +93,15 @@ const Contact: React.FC = () => {
       }
 
       pushToDataLayer("contact_button_click", { button_location: "lead-successful" });
-      setIsSubmitted(true);
       setName("");
       setEmail("");
       setMessage("");
       setPhone("");
       setRoomType("");
-      window.open("/thank-you", "_blank");
+      setSuccessDialogOpen(true);
     } catch {
       setErrorMsg("Network error. Please try again.");
     }
-
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setErrorMsg("");
-    }, 5000);
   };
 
   useEffect(() => {
@@ -130,6 +131,30 @@ const Contact: React.FC = () => {
 
   return (
     <section id="contact" className="section-padding bg-eden-beige/30">
+      <Dialog
+        open={successDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSuccessDialogOpen(false);
+            window.location.reload();
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Thank you</DialogTitle>
+          </DialogHeader>
+          <p className="text-eden-text text-sm leading-relaxed">
+            Thank you for contacting Eden. We will reach out to you shortly.
+          </p>
+          <DialogFooter>
+            <Button type="button" className="btn-primary" onClick={() => setSuccessDialogOpen(false)}>
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="container-custom">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-4 text-eden-dark">
@@ -235,19 +260,6 @@ const Contact: React.FC = () => {
                 <Button type="submit" className="btn-primary w-full">
                   Send Enquiry
                 </Button>
-
-                <div
-                  className={
-                    isSubmitted
-                      ? "mt-4 p-4 bg-green-50 border border-green-200 rounded-lg active"
-                      : "mt-4 p-4 bg-green-50 border border-green-200 rounded-lg inactive"
-                  }
-                >
-                  <p className="text-green-800 font-medium text-center">
-                    Thank You for contacting Eden, We will reach out to you
-                    shortly.
-                  </p>
-                </div>
               </form>
             </CardContent>
           </Card>

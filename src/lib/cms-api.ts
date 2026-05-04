@@ -343,6 +343,32 @@ export const deleteGalleryImage = (token: string, id: string) =>
     if (!res.ok) throw new CmsApiError(res.statusText, res.status, null);
   });
 
+export type ContactEnquiryDoc = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  bookingType?: string;
+  message?: string;
+  sourceUrl?: string;
+  status: "new" | "contacted" | "closed";
+  createdAt?: string;
+};
+
+export const getContactEnquiriesManage = (token: string) =>
+  fetchCms<ContactEnquiryDoc[]>("/api/contact-enquiries", { token });
+
+export const patchContactEnquiryStatus = (
+  token: string,
+  id: string,
+  status: "new" | "contacted" | "closed"
+) =>
+  fetchCms<unknown>(`/api/contact-enquiries/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    token,
+    body: JSON.stringify({ status }),
+  });
+
 export type UploadImageResult = { secureUrl: string; publicId: string };
 
 export const uploadDashboardImage = async (token: string, file: File): Promise<UploadImageResult> => {
